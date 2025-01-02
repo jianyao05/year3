@@ -13,10 +13,12 @@ pose = mpPose.Pose()
 mpDraw = mp.solutions.drawing_utils
 
 fps = cap.get(cv2.CAP_PROP_FPS)
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Parameters
 label = "SHOULDER_FLEXION_LEFT"  # Label for the dataset (change for specific movement)
-n_repetitions_to_add = 50  # Number of repetitions to add
+n_repetitions_to_add = 2  # Number of repetitions to add
 n_time_steps_per_rep = int(fps * 2)  # Number of frames per repetition (increased for longer capture)
 save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions
 lm_list = []  # To store landmarks for one repetition
@@ -32,7 +34,11 @@ existing_files = [f for f in os.listdir(save_folder) if f.endswith(".csv")]
 existing_reps = [int(f.split('_rep')[1].split('.')[0]) for f in existing_files if '_rep' in f]
 next_rep_start = max(existing_reps, default=0) + 1  # Start from the next available number
 
-# Indices for leg landmarks in MediaPipe (leg movement detection)
+# Initialize VideoWriter
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+output_video = cv2.VideoWriter(f'{save_folder}/{label}_output.avi', fourcc, fps, (frame_width, frame_height))
+
+# Indices for arm landmarks in MediaPipe (arm movement detection)
 arm_landmarks = {
     # RIGHT
     'right_shoulder': 12,           # FOR NORMALISATION
@@ -129,6 +135,24 @@ for rep_count in range(next_rep_start, next_rep_start + n_repetitions_to_add):
                     # Draw pose landmarks on image
                     frame = draw_landmark_on_image(mpDraw, results, frame)
 
+            text = f"Recording Frame: {rep_count}"
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.6
+            font_color = (255, 255, 255)  # White text
+            thickness = 2
+
+            # Get text size for the rectangle
+            text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
+            text_x = 10
+            text_y = 30
+            box_coords = ((text_x - 5, text_y - 20), (text_x + text_size[0] + 5, text_y + 5))
+
+            # Draw the rectangle and the text
+            cv2.rectangle(frame, box_coords[0], box_coords[1], (0, 0, 0), cv2.FILLED)  # Black rectangle
+            cv2.putText(frame, text, (text_x, text_y), font, font_scale, font_color, thickness)
+
+            # Write frame to the output video
+            output_video.write(frame)
 
             # Display the frame with pose landmarks
             cv2.imshow("image", frame)
@@ -153,6 +177,7 @@ for rep_count in range(next_rep_start, next_rep_start + n_repetitions_to_add):
 # Final message
 print(f"Added {n_repetitions_to_add} repetitions to the dataset.")
 
-# Release the webcam and close OpenCV windows
+# Release the webcam and VideoWriter, and close OpenCV windows
 cap.release()
+output_video.release()
 cv2.destroyAllWindows()
