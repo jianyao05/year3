@@ -17,8 +17,8 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Parameters
-label = "SHOULDER_FLEXION_LEFT"  # Label for the dataset (change for specific movement)
-n_repetitions_to_add = 2  # Number of repetitions to add
+label = "SHOULDER_FLEXION_RIGHT"  # Label for the dataset (change for specific movement)
+n_repetitions_to_add = 50  # Number of repetitions to add
 n_time_steps_per_rep = int(fps * 2)  # Number of frames per repetition (increased for longer capture)
 save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions
 lm_list = []  # To store landmarks for one repetition
@@ -35,8 +35,9 @@ existing_reps = [int(f.split('_rep')[1].split('.')[0]) for f in existing_files i
 next_rep_start = max(existing_reps, default=0) + 1  # Start from the next available number
 
 # Initialize VideoWriter
+output_filename = f"{label}_{len(existing_reps)}-{n_repetitions_to_add+len(existing_reps)}.avi"
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-output_video = cv2.VideoWriter(f'{save_folder}/{label}_output.avi', fourcc, fps, (frame_width, frame_height))
+output_video = cv2.VideoWriter(f'{save_folder}/{output_filename}_output.avi', fourcc, fps, (frame_width, frame_height))
 
 # Indices for arm landmarks in MediaPipe (arm movement detection)
 arm_landmarks = {
