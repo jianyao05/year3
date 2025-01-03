@@ -10,7 +10,7 @@ from keras.models import Sequential
 # Path to your data directory
 data_dir = "C:\\Users\\223162D\\PycharmProjects\\year3\\movement_datasets"
 n_time_steps = 60  # Number of timesteps for each sequence
-step_size = 30     # Step size for the moving window
+step_size = 45     # Step size for the moving window
 n_features = 36    # Number of features (x, y, z, visibility for multiple landmarks)
 
 # Function to load and preprocess data using moving window
@@ -75,4 +75,4 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 model.fit(X_train, y_train, epochs=131, batch_size=128, validation_data=(X_test, y_test))
 
 # Save the model
-model.save("SECOND_30stepsize.h5")
+model.save("SECOND_45stepsize.h5")
