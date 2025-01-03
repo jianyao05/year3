@@ -17,7 +17,15 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Parameters
-label = "PENDULUM_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "CIRCLE_LEFT"  # Label for the dataset (change for specific movement)
+label = "CIRCLE_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "CROSS_BODY_LEFT"  # Label for the dataset (change for specific movement)
+#label = "CROSS_BODY_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "PENDULUM_LEFT"  # Label for the dataset (change for specific movement)
+#label = "PENDULUM_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "SHOULDER_FLEXION_LEFT"  # Label for the dataset (change for specific movement)
+#label = "SHOULDER_FLEXION_RIGHT"  # Label for the dataset (change for specific movement)
+
 n_repetitions_to_add = 50  # Number of repetitions to add
 n_time_steps_per_rep = int(fps * 2)  # Number of frames per repetition (increased for longer capture)
 save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions

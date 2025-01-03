@@ -12,13 +12,13 @@ pose = mpPose.Pose()
 mpDraw = mp.solutions.drawing_utils
 
 # Load the trained LSTM model
-model = tf.keras.models.load_model("SECOND_30stepsize.h5")
+model = tf.keras.models.load_model("THIRD_45stepsize.h5")
 
 n_time_steps = 60                                           # Window size
 step_size = 45                                              # Lower step size for more frequent predictions
 
 # Labels and timing variables for movement detection
-exercise_labels = ["CB LEFT", "CB RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
+exercise_labels = ["CB LEFT", "CB RIGHT", "PENDULUM LEFT", "PENDULUM RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
 lm_list = []
 label = "Warmup...."
 lm_count = 0
