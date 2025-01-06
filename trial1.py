@@ -69,8 +69,7 @@ class FrozenShoulder:
         self.lmList = []
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
-                h, w, c = img.shape
-                print(h, w)
+                h, w, c = img.shape # 480 640
                 cx, cy, cz = int(lm.x * w), int(lm.y * h), lm.z
                 self.lmList.append([id, cx, cy, cz])
                 if draw:
@@ -140,7 +139,8 @@ class FrozenShoulder:
         return img
     
 
-    def angle(self):
+    def angle(self, img, location):
+        cx, cy, z = location
         cv2.circle(img, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
 
 
@@ -163,16 +163,14 @@ if __name__ == "__main__":
         results = detector.pose.process(imgRGB)
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
-        print
-        frame_count += 1
+        if len(lmList) != 0:    
+            detector.angle(img, lmList[11][1:])
+            frame_count += 1
 
-        if frame_count > warmup_frames:
-            img = detector.process_frame(img, results)
+            if frame_count > warmup_frames:
+                img = detector.process_frame(img, results)
 
         cv2.imshow("Exercise Detector", img)
-        print(lmList[2])
-        print(lmList[2][1:])
-        print(results.pose_landmarks.landmark[2])
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 

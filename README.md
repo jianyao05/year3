@@ -1,7 +1,7 @@
 # year3
 
 # main codes to use are saved_datasets_making, TRAINER_20250102, and INFERENCE_20250102
-
+## image shape for height, width is = 480 x 640
 ## 20250102
 ### Task/Action completed:
 - created new datasets for both left and right movements for shoulder flexion and cross body arm stretch
