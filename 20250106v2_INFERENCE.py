@@ -18,7 +18,7 @@ n_time_steps = 60                                           # Window size
 step_size = 45                                              # Lower step size for more frequent predictions
 
 # Labels and timing variables for movement detection
-exercise_labels = ["CB LEFT", "CB RIGHT", "PENDULUM LEFT", "PENDULUM RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
+exercise_labels = ["ARMPIT RIGHT", "CIRCLE LEFT", "CIRCLE RIGHT", "CB LEFT", "CB RIGHT", "PENDULUM LEFT", "PENDULUM RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
 lm_list = []
 label = "Warmup...."
 lm_count = 0

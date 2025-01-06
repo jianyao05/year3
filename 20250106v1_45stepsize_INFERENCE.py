@@ -12,13 +12,13 @@ pose = mpPose.Pose()
 mpDraw = mp.solutions.drawing_utils
 
 # Load the trained LSTM model
-model = tf.keras.models.load_model("THIRD_45stepsize.h5")
+model = tf.keras.models.load_model("20250106v1_45stepsize.h5")
 
 n_time_steps = 60                                           # Window size
 step_size = 45                                              # Lower step size for more frequent predictions
 
 # Labels and timing variables for movement detection
-exercise_labels = ["CB LEFT", "CB RIGHT", "PENDULUM LEFT", "PENDULUM RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
+exercise_labels = ["ARMPIT RIGHT", "CIRCLE LEFT", "CIRCLE RIGHT", "CB LEFT", "CB RIGHT", "PENDULUM LEFT", "PENDULUM RIGHT", "FLEXION LEFT", "FLEXION RIGHT"]
 lm_list = []
 label = "Warmup...."
 lm_count = 0
@@ -93,9 +93,68 @@ def draw_class_on_image(img):
     status_text = f"{label}"
     cv2.putText(img, status_text, (10, 50), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
     return img
+
+
+
+
+# ------------------- GET STATE BASED OFF ANGLES AND Z COORDINATES AND X? --------------
+# ------------------- CALCULATE ANGLES eg. [BELOW SHOULDER, SHOULDER, ELBOW] --------------
+def calculate_angle(self, point1, point2, point3):
+    # Calculate vectors
+    vector1 = np.array(point1) - np.array(point2)
+    vector2 = np.array(point3) - np.array(point2)
+
+    # Dot product and magnitudes
+    dot_product = np.dot(vector1, vector2)
+    magnitude1 = np.linalg.norm(vector1)
+    magnitude2 = np.linalg.norm(vector2)
+
+    # Angle in radians
+    angle_radians = np.arccos(dot_product / (magnitude1 * magnitude2))
+
+    # Convert to degrees
+    angle_degrees = np.degrees(angle_radians)
+
+    return angle_degrees
+
+def get_state(angle):
+    state = None
+
+    if 0 <= angle <= 30:
+        state = 1
+    elif 35 <= angle <= 75:
+        state = 2
+    elif 80 <= angle <= 100:
+        state = 3
+    return f"s{state}" if state else None
+
+def update_state_sequence(state):
+    if state == 's2':
+        if (('s3' not in list) and (list.count('s2')) == 0) or (('s3' in list) and (list.count('s2') == 1)):
+            list.append(state)
+            '''If 's3' hasn’t been added yet, only one 's2' can be added.
+               If 's3' has been added, one more 's2' can be added, but only if it has appeared once before.'''
+    elif state == 's3':
+        if (state not in list) and ('s2' in list):
+            list.append(state)
+    return list
+
+def counter(img, state):
+    global list, count, improper
+    if state == 's1':
+        if len(list) == 3:
+            count += 1
+
+        elif 's2' in list and len(list) == 1:
+            improper += 1
+
+        list = []
+        print('squats', count)
+        print('improper', improper)
+
 # ==========================================================================
 def detect(model, lm_list):
-    global label, lm_count
+    global label, current_lm_start, last_lm_time, lm_count, current_series, plm_series
 
     lm_list = np.array(lm_list)
     lm_list = np.expand_dims(lm_list, axis=0)
@@ -110,7 +169,9 @@ warmup_frames = 60
 i = 0
 
 cap = cv2.VideoCapture(0)
-
+list = []
+count = 0
+improper = 0
 
 while True:
     success, img = cap.read()
@@ -131,6 +192,7 @@ while True:
 
 
     cv2.imshow("Image", img)
+    print(count, improper, list)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

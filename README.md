@@ -30,3 +30,5 @@
 
 # Reference Exercises for Frozen Shoulder Rehabilitation
 ![Frozen shoulder exercise](https://scandinavianphysiotherapycenter.com/wp-content/uploads/2019/09/exercises-to-fix-frozen-shoulder.jpg.webp)
+# Reference for MediaPipe Landmarks
+![MediaPipe Pose Landmarks](https://miro.medium.com/v2/resize:fit:720/format:webp/1*JJCbfzhTySIqKr1L5pDkpQ.png)
