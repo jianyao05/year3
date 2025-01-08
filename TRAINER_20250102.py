@@ -75,4 +75,4 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 model.fit(X_train, y_train, epochs=131, batch_size=128, validation_data=(X_test, y_test))
 
 # Save the model
-model.save("20250106v4_45stepsize.h5")
+model.save("20250108v1_45stepsize.h5")
