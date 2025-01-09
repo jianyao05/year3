@@ -26,6 +26,8 @@
 - Updated the codes into a class
 - Manage to include the Angle calculations and State sequences for the Counter
 - Focused on Left and Right Shoulder Flexion
+- Usage of Dot Product to calculate the angles such that the z-axis is also incorporated 
+- Try to optimise and include other labels such that it is able to incorporate other exercises so it is able to track by itself
 #### Feedback
 - Why is the Hand Landmarks (Wrist, Index, Thumbs, etc.) included in the csv file
 - Why window step size was chosen to be 45?
