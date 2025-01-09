@@ -16,7 +16,27 @@
 - Both contains 50 repetitions of each exercise and was trained with a window size of 60 with step size of 45
 ### Additional things to note:
 - for the creation of datasets, implemented only extracting arm landmarks from the entire body to improve the accuracy and processing of the data within the csv file during prediction\
-- Included recording of creating datasets: Able to save the entire video during creating of datasets to be able to review 
+- Included recording of creating datasets: Able to save the entire video during creating of datasets to be able to review
+
+## 20250109
+### Task/Action completed:
+- <ins>**Current Datasets**</ins>\
+[0x]  Armpit Left | [50] Circle Left | [50] Cross Body Left | [100] Pendulum Left | [100] Flexion Left |<br>
+[50] Armpit Left | [50] Circle Left | [50] Cross Body Left | [100] Pendulum Left | [100] Flexion Left |
+- Updated the codes into a class
+- Manage to include the Angle calculations and State sequences for the Counter
+- Focused on Left and Right Shoulder Flexion
+#### Feedback
+- Why is the Hand Landmarks (Wrist, Index, Thumbs, etc.) included in the csv file
+- Why window step size was chosen to be 45?
+- Primarily focus on completing the counter and angle calculation of some exercises, not a must to complete all
+- Mentioned that for NYP presentation on FYP and OITP, it is focused more on the Technical sides, hence on our knowledge
+and the accuracy and how our figures tha we have chosen came about and be able to explain with reasoning and evidence
+on why these numbers are best suited
+- Using of Confusion Matrix to test for the accuracy of the model or using preset Libraries 
+### Additional things to note:
+- for the creation of datasets, implemented only extracting arm landmarks from the entire body to improve the accuracy and processing of the data within the csv file during prediction\
+- Included recording of creating datasets: Able to save the entire video during creating of datasets to be able to review
 
 
 
