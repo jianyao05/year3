@@ -51,9 +51,10 @@ class FrozenShoulder:
         self.lm_list = []  # Store landmark data for prediction
 
         # Exercise state tracking
+        self.list = []
         self.state_sequence = []
-        self.count = 0
-        self.improper_count = 0 ### may not be needed
+        self.LEFTFLEXION_COUNTER = 0
+        self.RIGHTFLEXION_COUNTER = 0
         pass
 
     def findPose(self, img, draw=True):
@@ -117,6 +118,8 @@ class FrozenShoulder:
         """Display the predicted class label on the image."""
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, self.label, (10, 50), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "L-Flexion: {}".format(str(self.LEFTFLEXION_COUNTER)), (510, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "R-Flexion: {}".format(str(self.RIGHTFLEXION_COUNTER)), (510, 470), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
         return img
     
     # more things here
@@ -140,22 +143,29 @@ class FrozenShoulder:
     
 
     def angle(self, img, LS, LE, RS, RE):  
-        ax, ay, az = LS
-        bx, by, bz = LE
-        cx, cy, cz = RS
-        dx, dy, dz = RE
+        
+        
 
-        reference_LS = ax, 1000, az
-
-        cv2.line(img, (ax, 1000), (ax, ay), (102, 204, 255), 4, cv2.LINE_AA)
-        cv2.line(img, (ax, ay), (bx, by), (102, 204, 255), 4, cv2.LINE_AA)
-        cv2.circle(img, (ax, ay), 5, (255, 0, 0), cv2.FILLED)
-        cv2.circle(img, (bx, by), 5, (255, 0, 0), cv2.FILLED)
-        cv2.circle(img, (cx, cy), 5, (0, 0, 255), cv2.FILLED)
-        cv2.circle(img, (dx, dy), 5, (0, 0, 255), cv2.FILLED)
-
-        vector1 = np.array(reference_LS) - np.array(LS)
-        vector2 = np.array(LE) - np.array(LS)
+        if self.label == "FLEXION LEFT":
+            cv2.line(img, (LS[0], 400), LS[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.line(img, LS[:2], LE[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.circle(img, LS[:2], 5, (255, 0, 0), cv2.FILLED)
+            cv2.circle(img, LE[:2], 5, (255, 0, 0), cv2.FILLED)
+            reference = LS[0], 1000, LS[2]
+            vector1 = np.array(reference) - np.array(LS)
+            vector2 = np.array(LE) - np.array(LS)
+        elif self.label == "FLEXION RIGHT":
+            cv2.line(img, (RS[0], 400), RS[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.line(img, RS[:2], RE[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.circle(img, RS[:2], 5, (0, 0, 255), cv2.FILLED)
+            cv2.circle(img, RE[:2], 5, (0, 0, 255), cv2.FILLED)
+            reference = RS[0], 1000, RS[2]
+            vector1 = np.array(reference) - np.array(RS)
+            vector2 = np.array(RE) - np.array(RS)
+        else:
+            reference = RS[0], 1000, RS[2]
+            vector1 = np.array(reference) - np.array(RS)
+            vector2 = np.array(RE) - np.array(RS)
 
         # Dot product and magnitudes
         dot_product = np.dot(vector1, vector2)
@@ -170,6 +180,51 @@ class FrozenShoulder:
         cv2.putText(img, str(int(angle_degrees)), (400, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
         return angle_degrees
+    
+    def get_state(self, angle):
+        state = None
+
+        if 0 <= angle <= 30:
+            state = 1
+        elif 35 <= angle <= 75:
+            state = 2
+        elif 80 <= angle <= 100:
+            state = 3
+        return f"s{state}" if state else None
+    
+    def update_state_sequence(self, state):
+        if state == 's2':
+            if (('s3' not in self.list) and (self.list.count('s2')) == 0) or (('s3' in self.list) and (self.list.count('s2') == 1)):
+                self.list.append(state)
+                '''If 's3' hasn’t been added yet, only one 's2' can be added.
+                   If 's3' has been added, one more 's2' can be added, but only if it has appeared once before.'''
+        elif state == 's3':
+            if (state not in self.list) and ('s2' in self.list):
+                self.list.append(state)
+        return self.list
+    
+
+
+    def counter(self, img, state):
+        if state == 's1':
+            if len(self.list) == 3:
+                if self.label == "FLEXION LEFT":
+                    self.LEFTFLEXION_COUNTER += 1
+                elif self.label == "FLEXION RIGHT":
+                    self.RIGHTFLEXION_COUNTER += 1
+                else:
+                    pass
+
+            elif 's2' in self.list and len(self.list) == 1:
+                print("Improper Form")
+
+            self.list = []
+            
+
+
+        return self.LEFTFLEXION_COUNTER, self.RIGHTFLEXION_COUNTER
+
+
 
 
 
@@ -193,7 +248,10 @@ if __name__ == "__main__":
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:    
-            detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
+            degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
+            current_state = detector.get_state(degree_of_movement)
+            detector.update_state_sequence(current_state)
+            detector.counter(img, current_state)
         frame_count += 1
 
         if frame_count > warmup_frames:
