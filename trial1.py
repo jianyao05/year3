@@ -139,9 +139,38 @@ class FrozenShoulder:
         return img
     
 
-    def angle(self, img, location):
-        cx, cy, z = location
-        cv2.circle(img, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
+    def angle(self, img, LS, LE, RS, RE):  
+        ax, ay, az = LS
+        bx, by, bz = LE
+        cx, cy, cz = RS
+        dx, dy, dz = RE
+
+        reference_LS = ax, 1000, az
+
+        cv2.line(img, (ax, 1000), (ax, ay), (102, 204, 255), 4, cv2.LINE_AA)
+        cv2.line(img, (ax, ay), (bx, by), (102, 204, 255), 4, cv2.LINE_AA)
+        cv2.circle(img, (ax, ay), 5, (255, 0, 0), cv2.FILLED)
+        cv2.circle(img, (bx, by), 5, (255, 0, 0), cv2.FILLED)
+        cv2.circle(img, (cx, cy), 5, (0, 0, 255), cv2.FILLED)
+        cv2.circle(img, (dx, dy), 5, (0, 0, 255), cv2.FILLED)
+
+        vector1 = np.array(reference_LS) - np.array(LS)
+        vector2 = np.array(LE) - np.array(LS)
+
+        # Dot product and magnitudes
+        dot_product = np.dot(vector1, vector2)
+        magnitude1 = np.linalg.norm(vector1)
+        magnitude2 = np.linalg.norm(vector2)
+
+        # Angle in radians
+        angle_radians = np.arccos(dot_product / (magnitude1 * magnitude2))
+
+        # Convert to degrees
+        angle_degrees = np.degrees(angle_radians)
+        cv2.putText(img, str(int(angle_degrees)), (400, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+        return angle_degrees
+
 
 
 
@@ -164,11 +193,11 @@ if __name__ == "__main__":
         img = detector.findPose(img, False)
         lmList = detector.findPosition(img, False)
         if len(lmList) != 0:    
-            detector.angle(img, lmList[11][1:])
-            frame_count += 1
+            detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
+        frame_count += 1
 
-            if frame_count > warmup_frames:
-                img = detector.process_frame(img, results)
+        if frame_count > warmup_frames:
+            img = detector.process_frame(img, results)
 
         cv2.imshow("Exercise Detector", img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
