@@ -40,7 +40,12 @@ on why these numbers are best suited
 - for the creation of datasets, implemented only extracting arm landmarks from the entire body to improve the accuracy and processing of the data within the csv file during prediction\
 - Included recording of creating datasets: Able to save the entire video during creating of datasets to be able to review
 
-
+## 20250110
+### Task/Action completed
+- Feedback on creating a user interface 
+- Ability to adjust different angles thresholds and duration of sets or amount of repetitions per set
+- Try to justify or remove the hand/finger landmarks within the csv file manually
+- Implement a Rest position / Control (user doing random stuff except the exercises)
 
 
 
