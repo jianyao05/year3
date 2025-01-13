@@ -5,6 +5,5 @@ pandas
 scipy
 tensorflow
 scikit-learn
-
-# streamlit
+streamlit
 # streamlit_webrtc
