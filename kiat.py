@@ -410,16 +410,28 @@ if app_mode == "Settings":
         st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
     with tab3:
         st.header("Tab 3 / 3")
-        api9, api10, api11, api12 = st.columns(4)
-        api11.slider("**FLEXION RIGHT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
-        api12.slider("**FLEXION RIGHT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
+        st.subheader("**PENDULUM SWING**")
+        dpi1, dpi2, dpi3, dpi4 = st.columns(4)
+        dpi1.slider("**PENDULUM SWING LEFT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        dpi2.slider("**PENDULUM SWING LEFT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
+        dpi3.slider("**PENDULUM SWING RIGHT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        dpi4.slider("**PENDULUM SWING RIGHT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
 
+        st.divider()
 
-    st.divider()
-    st.subheader("Settings")
-    api5, api6, api7, api8 = st.columns(4)
-    api5.slider("CROSS BODY LEFT", value=5, min_value=1, max_value=30)
-    api6.slider("CROSS BODY RIGHT", value=5, min_value=1, max_value=30)
-    api7.slider("PENDULUM LEFT", value=5, min_value=1, max_value=30)
-    api8.slider("PENDULUM RIGHT", value=5, min_value=1, max_value=30)
+        st.subheader("**SHOULDER FLEXION**")
+        epi1, epi2, epi3, epi4 = st.columns(4)
+        epi1.slider("**SHOULDER FLEXION LEFT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        epi2.slider("**SHOULDER FLEXION LEFT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
+        epi3.slider("**SHOULDER FLEXION RIGHT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        epi4.slider("**SHOULDER FLEXION RIGHT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
+
+        st.divider()
+
+        st.subheader("**TOWEL STRETCH**")
+        fpi1, fpi2, fpi3, fpi4 = st.columns(4)
+        fpi1.slider("**TOWEL STRETCH LEFT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        fpi2.slider("**TOWEL STRETCH LEFT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
+        fpi3.slider("**TOWEL STRETCH RIGHT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
+        fpi4.slider("**TOWEL STRETCH RIGHT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
 
