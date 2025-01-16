@@ -1,4 +1,3 @@
-import random
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -8,7 +7,6 @@ import math
 import streamlit as st
 import tempfile
 import time
-import pandas as pd
 from PIL import Image
 
 
@@ -203,8 +201,8 @@ class FrozenShoulder:
             if (('s3' not in self.list) and (self.list.count('s2')) == 0) or (
                     ('s3' in self.list) and (self.list.count('s2') == 1)):
                 self.list.append(state)
-                # If 's3' hasn’t been added yet, only one 's2' can be added.
-                # If 's3' has been added, one more 's2' can be added, but only if it has appeared once before.
+                '''If 's3' hasn’t been added yet, only one 's2' can be added.
+                   If 's3' has been added, one more 's2' can be added, but only if it has appeared once before.'''
         elif state == 's3':
             if (state not in self.list) and ('s2' in self.list):
                 self.list.append(state)
@@ -226,28 +224,6 @@ class FrozenShoulder:
             self.list = []
 
         return self.LEFTFLEXION_COUNTER, self.RIGHTFLEXION_COUNTER
-
-def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
-   dim = None
-   h, w = image.shape[:2]
-
-
-   if width is None and height is None:
-       return image
-
-
-   if width is None:
-       r = width / float(w)
-       dim = int(w * r), height
-   else:
-       r = width / float(w)
-       dim = width, int(h * r)
-
-
-   # resizing of image
-   resized = cv2.resize(image, dim, interpolation=inter)
-   return resized
-
 
 st.set_page_config(layout="wide")
 st.title("Frozen Shoulder Rehabilitation Model")
@@ -277,11 +253,35 @@ st.logo("nyp_logo.jpg", size="large")
 
 st.cache_resource()
 
-app_mode = st.sidebar.selectbox("Choose the App Mode", ["Video", "Settings", "About Us"])
+
+def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
+   dim = None
+   h, w = image.shape[:2]
+
+
+   if width is None and height is None:
+       return image
+
+
+   if width is None:
+       r = width / float(w)
+       dim = int(w * r), height
+   else:
+       r = width / float(w)
+       dim = width, int(h * r)
+
+
+   # resizing of image
+   resized = cv2.resize(image, dim, interpolation=inter)
+   return resized
+
+
+
+
+app_mode = st.sidebar.selectbox("Choose the App Mode",
+                               ["Settings", "Video", "About Us"])
 
 if app_mode == "Video":
-
-    st.empty()
     use_webcam = st.sidebar.toggle("Use Webcam")
     record = st.sidebar.checkbox("Record Video")
 
@@ -307,6 +307,11 @@ if app_mode == "Video":
 
     max_faces = st.sidebar.number_input("Number of Repetitions Per Set", value=5, min_value=1, max_value=30)
     st.sidebar.markdown("---")
+    detection_confidence = st.sidebar.slider("Min Detection Confidence", min_value=0.0, max_value=1.0, value=0.5)
+    tracking_confidence = st.sidebar.slider("Min Tracking Confidence", min_value=0.0, max_value=1.0, value=0.5)
+    st.sidebar.markdown("---")
+
+    st.markdown("**Output**")
 
     stframe = st.empty()
 
@@ -338,6 +343,8 @@ if app_mode == "Video":
 
     st.markdown("<hr/>", unsafe_allow_html=True)
 
+
+
     ## Dashboard
     detector = FrozenShoulder("20250106v1_45stepsize.h5")
 
@@ -347,7 +354,7 @@ if app_mode == "Video":
 
     while vid.isOpened():
         i += 1
-        success, img = vid.read()
+        success, img =  vid.read()
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = detector.pose.process(imgRGB)
         img = detector.findPose(img, False)
@@ -369,8 +376,7 @@ if app_mode == "Video":
 
         #  Dashboard
         kpi1_text.write(f"<h1 style='text-align: center; color:red;'>{int(fps)}</h1>", unsafe_allow_html=True)
-        kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}</h1>",
-                        unsafe_allow_html=True)
+        kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}</h1>", unsafe_allow_html=True)
         kpi3_text.write(f"<h1 style='text-align: center; color:red;'>{width}</h1>", unsafe_allow_html=True)
 
         imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
@@ -383,12 +389,7 @@ if app_mode == "Video":
     st.video(out_bytes)
 
 
-
-
-
-
-
-elif app_mode == "Settings":
+if app_mode == "Settings":
     st.header("Settings")
 
     tab1, tab2 = st.tabs(["**Tab 1 / 2**", "**Tab 2 / 2**"])
@@ -443,7 +444,4 @@ elif app_mode == "Settings":
         fpi2.slider("**TOWEL STRETCH LEFT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
         fpi3.slider("**TOWEL STRETCH RIGHT [REPETITIONS PER SET]**", min_value=5, max_value=30, value=10)
         fpi4.slider("**TOWEL STRETCH RIGHT [ANGLE THRESHOLD]**", min_value=0, max_value=120, value=90)
-
-elif app_mode == "About Us":
-    pass
 

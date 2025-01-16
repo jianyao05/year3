@@ -11,10 +11,10 @@ import time
 import pandas as pd
 from PIL import Image
 
-
 #   model path: refers to the model being used
 
 DEMO_VIDEO = "demo_vid.mp4"
+
 
 class FrozenShoulder:
     def __init__(self, model_path, n_time_steps=60, step_size=45):
@@ -227,49 +227,45 @@ class FrozenShoulder:
 
         return self.LEFTFLEXION_COUNTER, self.RIGHTFLEXION_COUNTER
 
+
 def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
-   dim = None
-   h, w = image.shape[:2]
+    dim = None
+    h, w = image.shape[:2]
 
+    if width is None and height is None:
+        return image
 
-   if width is None and height is None:
-       return image
+    if width is None:
+        r = width / float(w)
+        dim = int(w * r), height
+    else:
+        r = width / float(w)
+        dim = width, int(h * r)
 
-
-   if width is None:
-       r = width / float(w)
-       dim = int(w * r), height
-   else:
-       r = width / float(w)
-       dim = width, int(h * r)
-
-
-   # resizing of image
-   resized = cv2.resize(image, dim, interpolation=inter)
-   return resized
+    # resizing of image
+    resized = cv2.resize(image, dim, interpolation=inter)
+    return resized
 
 
 st.set_page_config(layout="wide")
 st.title("Frozen Shoulder Rehabilitation Model")
 
-
 st.markdown(
-   """
-   <style>
-   [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
-       width: 350px
-   }
-   [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
-       width: 350px
-       margin-left: -350px
-   }
-   </style>
-
-
-   """,
-   unsafe_allow_html=True,
+    """
+    <style>
+    [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
+        width: 350px
+    }
+    [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
+        width: 350px
+        margin-left: -350px
+    }
+    </style>
+ 
+ 
+    """,
+    unsafe_allow_html=True,
 )
-
 
 st.sidebar.title("Frozen Shoulder Sidebar")
 st.sidebar.subheader("Parameters")
@@ -280,107 +276,124 @@ st.cache_resource()
 app_mode = st.sidebar.selectbox("Choose the App Mode", ["Video", "Settings", "About Us"])
 
 if app_mode == "Video":
+    c1, c2, c3 = st.columns([0.7,0.15,0.15], border=True)
+    with c2:
+        c2.markdown("**ARMPIT LEFT: {}**".format(0))
+        c2.markdown("**ARMPIT RIGHT: {}**".format(0))
+        st.divider()
+        c2.markdown("**CIRCLE LEFT: {}**".format(0))
+        c2.markdown("**CIRCLE RIGHT: {}**".format(0))
+        st.divider()
+        c2.markdown("**CROSSBODY LEFT: {}**".format(0))
+        c2.markdown("**CROSSBODY RIGHT: {}**".format(0))
+        st.divider()
+        c2.markdown("**PENDULUM LEFT: {}**".format(0))
+        c2.markdown("**PENDULUM RIGHT: {}**".format(0))
+        st.divider()
+        count_left_shoulder = c2.markdown("**SHOULDER LEFT: {}**".format(0))
+        count_right_shoulder = c2.markdown("**SHOULDER RIGHT: {}**".format(0))
+        st.divider()
+        c2.markdown("**TOWEL LEFT: {}**".format(0))
+        c2.markdown("**TOWEL RIGHT: {}**".format(0))
 
-    st.empty()
-    use_webcam = st.sidebar.toggle("Use Webcam")
-    record = st.sidebar.checkbox("Record Video")
-
-    if record:
-        st.checkbox("Recording", value=True)
-
-    st.markdown(
-        """
-        <style>
-        [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
-            width: 350px
-        }
-        [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
-            width: 350px
-            margin-left: -350px
-        }
-        </style>
-
-
-        """,
-        unsafe_allow_html=True,
-    )
-
-    max_faces = st.sidebar.number_input("Number of Repetitions Per Set", value=5, min_value=1, max_value=30)
-    st.sidebar.markdown("---")
-
-    stframe = st.empty()
-
-    if not use_webcam:
-        vid = cv2.VideoCapture(DEMO_VIDEO)
-    else:
-        vid = cv2.VideoCapture(0)
-
-    width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps_input = int(vid.get(cv2.CAP_PROP_FPS))
-
-    fps = 0
-    i = 0  # iterations
-
-    kpi1, kpi2, kpi3, kpi4, kpi5, kpi6, kpi7 = st.columns(7)
-
-    with kpi1:
+    with c3:
         st.markdown('**Frame Rate**')
         kpi1_text = st.markdown('0')
-
-    with kpi2:
-        st.markdown('**Amount of Proper Squat**')
-        kpi2_text = st.markdown('0')
-
-    with kpi3:
+        st.divider()
         st.markdown('**Range of Motion**')
-        kpi3_text = st.markdown('0')
+        kpi2_text = st.markdown('0')
+        st.divider()
+        st.markdown('**Sets Completed**')
+        kpi3_text = st.markdown('0/0')
 
-    st.markdown("<hr/>", unsafe_allow_html=True)
 
-    ## Dashboard
-    detector = FrozenShoulder("20250106v1_45stepsize.h5")
 
-    prevTime = 0
-    warmup_frames = 60
-    frame_count = 0
+    with c1:
+        st.empty()
+        use_webcam = st.sidebar.toggle("Use Webcam")
+        record = st.sidebar.checkbox("Record Video")
 
-    while vid.isOpened():
-        i += 1
-        success, img = vid.read()
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = detector.pose.process(imgRGB)
-        img = detector.findPose(img, False)
-        lmList = detector.findPosition(img, False)
-        if len(lmList) != 0:
-            degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
-            current_state = detector.get_state(degree_of_movement)
-            detector.update_state_sequence(current_state)
-            detector.counter(img, current_state)
-        frame_count += 1
+        if record:
+            st.checkbox("Recording", value=True)
 
-        if frame_count > warmup_frames:
-            img = detector.process_frame(img, results)
+        st.markdown(
+            """
+            <style>
+            [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
+                width: 350px
+            }
+            [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
+                width: 350px
+                margin-left: -350px
+            }
+            </style>
+    
+    
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # FPS Counter Logic
-        currTime = time.time()
-        fps = 1 / (currTime - prevTime)
-        prevTime = currTime
+        max_faces = st.sidebar.number_input("Number of Repetitions Per Set", value=5, min_value=1, max_value=30)
+        st.sidebar.markdown("---")
 
-        #  Dashboard
-        kpi1_text.write(f"<h1 style='text-align: center; color:red;'>{int(fps)}</h1>", unsafe_allow_html=True)
-        kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}</h1>",
-                        unsafe_allow_html=True)
-        kpi3_text.write(f"<h1 style='text-align: center; color:red;'>{width}</h1>", unsafe_allow_html=True)
+        stframe = st.empty()
 
-        imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
-        imgRGB = image_resize(image=img, width=640)
-        stframe.image(img, channels="BGR", use_container_width=True)
+        if not use_webcam:
+            vid = cv2.VideoCapture(DEMO_VIDEO)
+        else:
+            vid = cv2.VideoCapture(0)
 
-    st.text("Video Processed")
-    output_video = open("output1.mp4", "rb")
-    out_bytes = output_video.read()
-    st.video(out_bytes)
+        width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps_input = int(vid.get(cv2.CAP_PROP_FPS))
+
+        fps = 0
+        i = 0  # iterations
+
+        st.markdown("<hr/>", unsafe_allow_html=True)
+
+        ## Dashboard
+        detector = FrozenShoulder("20250106v1_45stepsize.h5")
+
+        prevTime = 0
+        warmup_frames = 60
+        frame_count = 0
+
+        while vid.isOpened():
+            i += 1
+            success, img = vid.read()
+            imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            results = detector.pose.process(imgRGB)
+            img = detector.findPose(img, False)
+            lmList = detector.findPosition(img, False)
+            if len(lmList) != 0:
+                degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
+                current_state = detector.get_state(degree_of_movement)
+                detector.update_state_sequence(current_state)
+                L, R = detector.counter(img, current_state)
+            frame_count += 1
+
+            if frame_count > warmup_frames:
+                img = detector.process_frame(img, results)
+
+            # FPS Counter Logic
+            currTime = time.time()
+            fps = 1 / (currTime - prevTime)
+            prevTime = currTime
+
+            #  Dashboard
+            kpi1_text.write(f"<h1 style='text-align: center; color:red;'>{int(fps)}</h1>", unsafe_allow_html=True)
+            kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}</h1>",
+                            unsafe_allow_html=True)
+            kpi3_text.write(f"<h1 style='text-align: center; color:red;'>{width}</h1>", unsafe_allow_html=True)
+            count_left_shoulder.write("**SHOULDER LEFT: {}**".format(L))
+            count_right_shoulder.write("**SHOULDER LEFT: {}**".format(R))
+
+
+
+            imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
+            imgRGB = image_resize(image=img, width=640)
+            stframe.image(img, channels="BGR", use_container_width=True)
 
 
 
