@@ -372,8 +372,8 @@ elif app_mode == "Video":
 
             #  Dashboard
             kpi1_text.write(f"<h1 style='text-align: center; color:red;'>{int(fps)}</h1>", unsafe_allow_html=True)
-            kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}</h1>", unsafe_allow_html=True)
-            kpi3_text.write(f"<h1 style='text-align: center; color:red;'>{width}</h1>", unsafe_allow_html=True)
+            kpi2_text.write(f"<h1 style='text-align: center; color:red;'>{int(degree_of_movement)}°</h1>", unsafe_allow_html=True)
+            kpi3_text.write(f"<h1 style='text-align: center; color:red;'>{L} Reps/h1>", unsafe_allow_html=True)
             count_left_shoulder.write("**SHOULDER LEFT: {}**".format(L))
             count_right_shoulder.write("**SHOULDER LEFT: {}**".format(R))
 

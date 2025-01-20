@@ -15,6 +15,7 @@ class FrozenShoulder:
     def __init__(self, model_path, n_time_steps=60, step_size=45):
         # Initialize MediaPipe
         self.ROM_left_flexion = 90
+        self.ROM_right_flexion = 90
         self.mpPose = mp.solutions.pose
         self.pose = self.mpPose.Pose()
         self.mpDraw = mp.solutions.drawing_utils
@@ -188,6 +189,8 @@ class FrozenShoulder:
             ROM = self.ROM_left_flexion
         elif self.label == "FLEXION RIGHT":
             ROM = self.ROM_right_flexion
+        else:
+            ROM = self.ROM_right_flexion
         if ROM - 100 <= angle <= ROM - 80:  # 0  < ANGLES < 20
             state = 1
         elif ROM - 50 <= angle <= ROM - 10:  # 30  < ANGLES < 80
@@ -288,6 +291,7 @@ if app_mode == "Settings":
 
 
 elif app_mode == "Video":
+    st.empty()
     c1, c2, c3 = st.columns([0.7, 0.15, 0.15], border=True)
     with c2:
         count_left_shoulder = c2.markdown("**SHOULDER LEFT: {}**".format(0))
@@ -336,6 +340,7 @@ elif app_mode == "Video":
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps_input = int(vid.get(cv2.CAP_PROP_FPS))
+        print(fps_input)
 
         fps = 0
         i = 0  # iterations
@@ -343,8 +348,7 @@ elif app_mode == "Video":
         st.markdown("<hr/>", unsafe_allow_html=True)
 
         ## Dashboard
-        detector = FrozenShoulder("20250106v1_45stepsize.h5", ROM_left_flexion=st.session_state.ROM_left_flexion,
-                                  ROM_right_flexion=st.session_state.ROM_right_flexion)
+        detector = FrozenShoulder("20250106v1_45stepsize.h5")
 
         prevTime = 0
         warmup_frames = 60
@@ -379,9 +383,9 @@ elif app_mode == "Video":
             count_left_shoulder.write("**SHOULDER LEFT: {}**".format(L))
             count_right_shoulder.write("**SHOULDER LEFT: {}**".format(R))
 
-            imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
-            imgRGB = image_resize(image=img, width=640)
-            stframe.image(img, channels="BGR", use_container_width=True)
+        imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
+        imgRGB = image_resize(image=img, width=640)
+        stframe.image(img, channels="BGR", use_container_width=True)
 
 
 
