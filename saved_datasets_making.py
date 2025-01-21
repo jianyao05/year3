@@ -23,7 +23,7 @@ frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 #label = "CROSS_BODY_LEFT"  # Label for the dataset (change for specific movement)
 #label = "CROSS_BODY_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "PENDULUM_LEFT"  # Label for the dataset (change for specific movement)
-label = "PENDULUM_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "PENDULUM_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "SHOULDER_FLEXION_LEFT"  # Label for the dataset (change for specific movement) get yuhang to do more examples
 #label = "SHOULDER_FLEXION_RIGHT"  # Label for the dataset (change for specific movement)
 
