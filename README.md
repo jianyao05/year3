@@ -56,6 +56,17 @@ on why these numbers are best suited
 - Able to adjust the amount of reps and target to reach
 
 
+## 20250121
+### Task/Action completed:
+- <ins>**Current Datasets**</ins>\
+[0x]  Armpit Left | [300] Circle Left | [300] Cross Body Left | [100] Pendulum Left | [300] Flexion Left |<br>
+[50] Armpit Right | [300] Circle Right | [300] Cross Body Right | [100] Pendulum Right | [300] Flexion Right |
+- Created a User Interface using Streamlit
+- Able to adjust the amount of reps and target to reach
+
+
+
+
 
 
 

@@ -1,9 +1,12 @@
 mediapipe==0.10.14
-opencv-python
-numpy
-pandas
+opencv-python~=4.10.0.84
+numpy~=1.26.4
+pandas~=2.2.3
 scipy
-tensorflow
-scikit-learn
-streamlit
+tensorflow~=2.18.0
+scikit-learn~=1.6.0
+streamlit~=1.41.1
 # streamlit_webrtc
+pillow~=11.0.0
+matplotlib~=3.10.0
+keras~=3.7.0

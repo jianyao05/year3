@@ -346,7 +346,7 @@ if app_mode == "Video":
     use_webcam = st.sidebar.toggle("Use Webcam")
 
     vid = cv2.VideoCapture(0)
-    detector = FrozenShoulder("20250106v1_45stepsize.h5")
+    detector = FrozenShoulder("NEW_CODE_V1.h5")
 
     # Targets
     detector.target_left_flexion = st.session_state.target_left_flexion
