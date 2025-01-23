@@ -60,7 +60,7 @@ class FrozenShoulder:
         self.counter_left_cross = 0
         self.counter_right_cross = 0
 
-       # TARGETS
+        # TARGETS
         ###
         self.target_left_armpit = 0
         self.target_right_armpit = 0
@@ -79,6 +79,26 @@ class FrozenShoulder:
         ###
         self.target_left_towel = 0
         self.target_right_towel = 0
+
+        # ANGLE
+        ###
+        self.angle_left_armpit = 0
+        self.angle_right_armpit = 0
+        ###
+        self.angle_left_circle = 0
+        self.angle_right_circle = 0
+        ###
+        self.angle_left_cross = 0
+        self.angle_right_cross = 0
+        ###
+        self.angle_left_pendulum = 0
+        self.angle_right_pendulum = 0
+        ###
+        self.angle_left_flexion = 0
+        self.angle_right_flexion = 0
+        ###
+        self.angle_left_towel = 0
+        self.angle_right_towel = 0
         pass
 
     def findPose(self, img, draw=True):
@@ -278,7 +298,7 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
     return resized
 
 
-### ------------------------------------------------ STATE SESSIONS ------------------------------------------------ ###
+### ------------------------------------------ STATE SESSIONS FOR TARGET ------------------------------------------- ###
 # Armpit Stretch
 if "target_left_armpit" not in st.session_state:
     st.session_state.target_left_armpit = 0
@@ -315,6 +335,43 @@ if "target_left_towel" not in st.session_state:
 if "target_right_towel" not in st.session_state:
     st.session_state.target_right_towel = 0
 
+### ------------------------------------------ STATE SESSIONS FOR ANGLE ------------------------------------------- ###
+# Armpit Stretch
+if "angle_left_armpit" not in st.session_state:
+    st.session_state.angle_left_armpit = 90
+if "angle_right_armpit" not in st.session_state:
+    st.session_state.angle_right_armpit = 90
+
+# Arm Circles
+if "angle_left_circle" not in st.session_state:
+    st.session_state.angle_left_circle = 90
+if "angle_right_circle" not in st.session_state:
+    st.session_state.angle_right_circle = 90
+
+# Cross Body Stretch
+if "angle_left_cross" not in st.session_state:
+    st.session_state.angle_left_cross = 90
+if "angle_right_cross" not in st.session_state:
+    st.session_state.angle_right_cross = 90
+
+# Pendulum Swing
+if "angle_left_pendulum" not in st.session_state:
+    st.session_state.angle_left_pendulum = 90
+if "angle_right_pendulum" not in st.session_state:
+    st.session_state.angle_right_pendulum = 90
+
+# Shoulder Flexion
+if "angle_left_flexion" not in st.session_state:
+    st.session_state.angle_left_flexion = 90
+if "angle_right_flexion" not in st.session_state:
+    st.session_state.angle_right_flexion = 90
+
+# Towel Stretch
+if "angle_left_towel" not in st.session_state:
+    st.session_state.angle_left_towel = 90
+if "angle_right_towel" not in st.session_state:
+    st.session_state.angle_right_towel = 90
+
 ### ------------------------------------ START OF USER INTERFACE CUSTOMISATIONS ------------------------------------ ###
 st.set_page_config(layout="wide")
 st.title("Frozen Shoulder Rehabilitation Model")
@@ -340,7 +397,7 @@ st.sidebar.subheader("Parameters")
 
 st.cache_resource()
 
-app_mode = st.sidebar.selectbox("Choose the App Mode", ["Target", "Video"])
+app_mode = st.sidebar.selectbox("Choose the App Mode", ["Target", "Video", "Angle"])
 
 if app_mode == "Video":
     use_webcam = st.sidebar.toggle("Use Webcam")
@@ -351,6 +408,10 @@ if app_mode == "Video":
     # Targets
     detector.target_left_flexion = st.session_state.target_left_flexion
     detector.target_right_flexion = st.session_state.target_right_flexion
+
+    # Angles
+    detector.angle_left_flexion = st.session_state.angle_left_flexion
+    detector.angle_right_flexion = st.session_state.angle_right_flexion
 
 
 
@@ -561,6 +622,108 @@ elif app_mode == "Target":
             "Target Repetitions for Right Towel Stretch",
             step=1,
             value=st.session_state.target_right_towel,
+            placeholder="Enter Amount..."
+        )
+        pass
+
+elif app_mode == "Angle":
+    st.empty()
+    st.header("Set Exercise Angles")
+    T1, T2, T3 = st.columns(3, border=True)
+    with T1:
+        # Armpit Stretch Angles
+        st.subheader("Armpit Stretch")
+        st.session_state.angle_left_armpit = st.number_input(
+            "Angle Repetitions for Left Armpit Stretch",
+            step=1,
+            value=st.session_state.angle_left_armpit,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_armpit = st.number_input(
+            "Angle Repetitions for Right Armpit Stretch",
+            step=1,
+            value=st.session_state.angle_right_armpit,
+            placeholder="Enter Amount..."
+        )
+        pass
+    with T2:
+        # Arm Circles Angles
+        st.subheader("Arm Circles")
+        st.session_state.angle_left_circle = st.number_input(
+            "Angle Repetitions for Left Arm Circles",
+            step=1,
+            value=st.session_state.angle_left_circle,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_circle = st.number_input(
+            "Angle Repetitions for Right Arm Circles",
+            step=1,
+            value=st.session_state.angle_right_circle,
+            placeholder="Enter Amount..."
+        )
+        pass
+    with T3:
+        # Cross Body Stretch Angles
+        st.subheader("Cross Body Stretch")
+        st.session_state.angle_left_cross = st.number_input(
+            "Angle Repetitions for Left Cross Body Stretch",
+            step=1,
+            value=st.session_state.angle_left_cross,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_cross = st.number_input(
+            "Angle Repetitions for Right Cross Body Stretch",
+            step=1,
+            value=st.session_state.angle_right_cross,
+            placeholder="Enter Amount..."
+        )
+        pass
+    T4, T5, T6 = st.columns(3, border=True)
+    with T4:
+        # Pendulum Swing Angles
+        st.subheader("Pendulum Swing")
+        st.session_state.angle_left_pendulum = st.number_input(
+            "Angle Repetitions for Left Pendulum Swing",
+            step=1,
+            value=st.session_state.angle_left_pendulum,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_pendulum = st.number_input(
+            "Angle Repetitions for Right Pendulum Swing",
+            step=1,
+            value=st.session_state.angle_right_pendulum,
+            placeholder="Enter Amount..."
+        )
+        pass
+    with T5:
+        # Shoulder Flexion Angles
+        st.subheader("Shoulder Flexion")
+        st.session_state.angle_left_flexion = st.number_input(
+            "Angle Repetitions for Left Shoulder Flexion",
+            step=1,
+            value=st.session_state.angle_left_flexion,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_flexion = st.number_input(
+            "Angle Repetitions for Right Shoulder Flexion",
+            step=1,
+            value=st.session_state.angle_right_flexion,
+            placeholder="Enter Amount..."
+        )
+        pass
+    with T6:
+        # Towel Stretch Angles
+        st.subheader("Towel Stretch")
+        st.session_state.angle_left_towel = st.number_input(
+            "Angle Repetitions for Left Towel Stretch",
+            step=1,
+            value=st.session_state.angle_left_towel,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.angle_right_towel = st.number_input(
+            "Angle Repetitions for Right Towel Stretch",
+            step=1,
+            value=st.session_state.angle_right_towel,
             placeholder="Enter Amount..."
         )
         pass

@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import OneHotEncoder
 
 # Load the model
-model_path = "NEW_CODE_V1.h5"  # Replace with your model path
+model_path = "NEW_CODE_V2.h5"  # Replace with your model path
 model = load_model(model_path)
 
 # Load and preprocess the test data
@@ -13,7 +13,7 @@ model = load_model(model_path)
 import os
 import pandas as pd
 
-test_data_dir = "C:\\Users\\223162D\\PycharmProjects\\year3\\movement_datasets"  # Replace with your test dataset folder
+test_data_dir = "C:\\Users\\223162D\\PycharmProjects\\year3\\test_datasets"  # Replace with your test dataset folder
 n_time_steps = 60
 n_features = 36
 
