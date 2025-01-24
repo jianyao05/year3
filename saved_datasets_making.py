@@ -18,10 +18,11 @@ frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Parameters
 #label = "ARMPIT_LEFT"  # Label for the dataset (change for specific movement)
+#label = "ARMPIT_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "CIRCLE_LEFT"  # Label for the dataset (change for specific movement)
-#label = "CIRCLE_RIGHT"  # Label for the dataset (change for specific movement)
+label = "CIRCLE_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "CROSS_BODY_LEFT"  # Label for the dataset (change for specific movement)
-label = "CROSS_BODY_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "CROSS_BODY_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "PENDULUM_LEFT"  # Label for the dataset (change for specific movement)
 #label = "PENDULUM_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "SHOULDER_FLEXION_LEFT"  # Label for the dataset (change for specific movement) get yuhang to do more examples
@@ -29,8 +30,8 @@ label = "CROSS_BODY_RIGHT"  # Label for the dataset (change for specific movemen
 
 n_repetitions_to_add = 50  # Number of repetitions to add
 n_time_steps_per_rep = int(fps * 2)  # Number of frames per repetition (increased for longer capture)
-#save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions
-save_folder = f"./test_datasets/{label}/"  # Folder to save repetitions
+save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions
+#save_folder = f"./test_datasets/{label}/"  # Folder to save repetitions
 lm_list = []  # To store landmarks for one repetition
 frame_count = 0  # Track the frame count per repetition
 break_time = 0.5  # Break time between repetitions in seconds
