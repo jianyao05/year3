@@ -238,16 +238,32 @@ class FrozenShoulder:
         state = None
 
         # Dynamically fetch angle thresholds
-        if self.label == "FLEXION LEFT":
-            threshold = self.angle_left_flexion
-        elif self.label == "FLEXION RIGHT":
-            threshold = self.angle_right_flexion
+        if self.label == "ARMPIT LEFT":
+            threshold = self.angle_left_armpit
+        elif self.label == "ARMPIT RIGHT":
+            threshold = self.angle_right_armpit
         elif self.label == "CIRCLE LEFT":
             threshold = self.angle_left_circle
         elif self.label == "CIRCLE RIGHT":
             threshold = self.angle_right_circle
+        elif self.label == "CB LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "CB RIGHT":
+            threshold = self.angle_right_towel
+        elif self.label == "PENDULUM LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "PENDULUM RIGHT":
+            threshold = self.angle_right_towel
+        elif self.label == "FLEXION LEFT":
+            threshold = self.angle_left_flexion
+        elif self.label == "FLEXION RIGHT":
+            threshold = self.angle_right_flexion
+        elif self.label == "TOWEL LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "TOWEL RIGHT":
+            threshold = self.angle_right_towel
         else:
-            threshold = 90  # Default threshold if no specific exercise detected
+            threshold = 90  # Default threshold for undefined exercises
 
         # Define state ranges based on the dynamic threshold
         if 0 <= angle <= threshold - 60:
@@ -486,13 +502,13 @@ if app_mode == "Video":
                     # Target shit
                     if detector.label == "FLEXION LEFT":
                         color_left_flexion = "red"
-                        color_right_flexion = "black"
+                        color_right_flexion = "white"
                     elif detector.label == "FLEXION RIGHT":
-                        color_left_flexion = "black"
+                        color_left_flexion = "white"
                         color_right_flexion = "red"
                     else:
-                        color_left_flexion = "black"
-                        color_right_flexion = "black"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
 
                     if st.session_state.target_left_flexion > 0:
                         text1.write(
@@ -525,14 +541,30 @@ if app_mode == "Video":
             imgRGB = image_resize(image=img, width=640)
             with c1:
                 # Dynamically fetch the threshold value for the current exercise
-                if detector.label == "FLEXION LEFT":
-                    threshold = detector.angle_left_flexion
-                elif detector.label == "FLEXION RIGHT":
-                    threshold = detector.angle_right_flexion
+                if detector.label == "ARMPIT LEFT":
+                    threshold = detector.angle_left_armpit
+                elif detector.label == "ARMPIT RIGHT":
+                    threshold = detector.angle_right_armpit
                 elif detector.label == "CIRCLE LEFT":
                     threshold = detector.angle_left_circle
                 elif detector.label == "CIRCLE RIGHT":
                     threshold = detector.angle_right_circle
+                elif detector.label == "CB LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "CB RIGHT":
+                    threshold = detector.angle_right_towel
+                elif detector.label == "PENDULUM LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "PENDULUM RIGHT":
+                    threshold = detector.angle_right_towel
+                elif detector.label == "FLEXION LEFT":
+                    threshold = detector.angle_left_flexion
+                elif detector.label == "FLEXION RIGHT":
+                    threshold = detector.angle_right_flexion
+                elif detector.label == "TOWEL LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "TOWEL RIGHT":
+                    threshold = detector.angle_right_towel
                 else:
                     threshold = 90  # Default threshold for undefined exercises
 
