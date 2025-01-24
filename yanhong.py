@@ -1,14 +1,10 @@
 import time
-
 import cv2
 import mediapipe as mp
 import numpy as np
 import threading
 import tensorflow as tf
-
 import streamlit as st
-
-from kiat import degree_of_movement
 
 
 class FrozenShoulder:
@@ -185,7 +181,7 @@ class FrozenShoulder:
                 self.lm_list = self.lm_list[self.step_size:]
         return img
 
-    def angle(self, img, LS, LE, RS, RE):
+    def angle(self, img, LS, LE, LW, RS, RE, RW):
 
         if self.label == "FLEXION LEFT":
             cv2.line(img, (LS[0], 400), LS[:2], (102, 204, 255), 4, cv2.LINE_AA)
@@ -241,11 +237,24 @@ class FrozenShoulder:
     def get_state(self, angle):
         state = None
 
-        if 0 <= angle <= 30:
+        # Dynamically fetch angle thresholds
+        if self.label == "FLEXION LEFT":
+            threshold = self.angle_left_flexion
+        elif self.label == "FLEXION RIGHT":
+            threshold = self.angle_right_flexion
+        elif self.label == "CIRCLE LEFT":
+            threshold = self.angle_left_circle
+        elif self.label == "CIRCLE RIGHT":
+            threshold = self.angle_right_circle
+        else:
+            threshold = 90  # Default threshold if no specific exercise detected
+
+        # Define state ranges based on the dynamic threshold
+        if 0 <= angle <= threshold - 60:
             state = 1
-        elif 35 <= angle <= 75:
+        elif threshold - 50 <= angle <= threshold - 10:
             state = 2
-        elif 80 <= angle <= 100:
+        elif threshold <= angle <= threshold + 10:
             state = 3
         return f"s{state}" if state else None
 
@@ -259,7 +268,7 @@ class FrozenShoulder:
                 self.list.append(state)
         return self.list
 
-    def counter(self, img, state):
+    def counter(self, state):
         if state == 's1':
             if len(self.list) == 3:
                 if self.label == "FLEXION LEFT":
@@ -299,6 +308,8 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
     resized = cv2.resize(image, dim, interpolation=inter)
     return resized
 
+
+degree_of_movement = 0
 ### ------------------------------------------ STATE SESSIONS FOR TARGET ------------------------------------------- ###
 # Armpit Stretch
 if "target_left_armpit" not in st.session_state:
@@ -403,7 +414,7 @@ app_mode = st.sidebar.selectbox("Choose the App Mode", ["Target", "Video", "Angl
 if app_mode == "Video":
     use_webcam = st.sidebar.toggle("Use Webcam")
 
-    if use_webcam == True:
+    if use_webcam:
 
 
         vid = cv2.VideoCapture(0)
@@ -465,10 +476,10 @@ if app_mode == "Video":
             img = detector.findPose(img, False)
             lmList = detector.findPosition(img, False)
             if len(lmList) != 0:
-                degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
+                degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[15][1:], lmList[12][1:], lmList[14][1:], lmList[16][1:])
                 current_state = detector.get_state(degree_of_movement)
                 detector.update_state_sequence(current_state)
-                detector.counter(img, current_state)
+                detector.counter(current_state)
 
                 # Update the counters in the UI
                 with c2:
@@ -513,13 +524,26 @@ if app_mode == "Video":
             imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
             imgRGB = image_resize(image=img, width=640)
             with c1:
+                # Dynamically fetch the threshold value for the current exercise
+                if detector.label == "FLEXION LEFT":
+                    threshold = detector.angle_left_flexion
+                elif detector.label == "FLEXION RIGHT":
+                    threshold = detector.angle_right_flexion
+                elif detector.label == "CIRCLE LEFT":
+                    threshold = detector.angle_left_circle
+                elif detector.label == "CIRCLE RIGHT":
+                    threshold = detector.angle_right_circle
+                else:
+                    threshold = 90  # Default threshold for undefined exercises
+
+                # Display the current exercise, ROM, and threshold
                 exercise_label.write(
                     f"""
-                    <div style='display: flex; justify-content: space-between; align-items: center;'>
-                        <h3 style='color: red;'>Current Exercise: {detector.label}</h3>
-                        <h3 style='color: blue;'>ROM: {int(degree_of_movement)}°</h3>
-                    </div>
-                    """,
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <h3 style='color: red;'>Current Exercise: {detector.label}</h3>
+                            <h3 style='color: blue;'>ROM: {int(degree_of_movement)}° / Threshold: {threshold}°</h3>
+                        </div>
+                        """,
                     unsafe_allow_html=True,
                 )
                 stframe.image(imgRGB, channels="BGR", use_container_width=True)
