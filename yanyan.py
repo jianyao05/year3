@@ -1,14 +1,10 @@
 import time
-
 import cv2
 import mediapipe as mp
 import numpy as np
 import threading
 import tensorflow as tf
-
 import streamlit as st
-
-from kiat import degree_of_movement
 
 
 class FrozenShoulder:
@@ -185,7 +181,7 @@ class FrozenShoulder:
                 self.lm_list = self.lm_list[self.step_size:]
         return img
 
-    def angle(self, img, LS, LE, RS, RE):
+    def angle(self, img, LS, LE, LW, RS, RE, RW):
 
         if self.label == "FLEXION LEFT":
             cv2.line(img, (LS[0], 400), LS[:2], (102, 204, 255), 4, cv2.LINE_AA)
@@ -241,11 +237,40 @@ class FrozenShoulder:
     def get_state(self, angle):
         state = None
 
-        if 0 <= angle <= 30:
+        # Dynamically fetch angle thresholds
+        if self.label == "ARMPIT LEFT":
+            threshold = self.angle_left_armpit
+        elif self.label == "ARMPIT RIGHT":
+            threshold = self.angle_right_armpit
+        elif self.label == "CIRCLE LEFT":
+            threshold = self.angle_left_circle
+        elif self.label == "CIRCLE RIGHT":
+            threshold = self.angle_right_circle
+        elif self.label == "CB LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "CB RIGHT":
+            threshold = self.angle_right_towel
+        elif self.label == "PENDULUM LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "PENDULUM RIGHT":
+            threshold = self.angle_right_towel
+        elif self.label == "FLEXION LEFT":
+            threshold = self.angle_left_flexion
+        elif self.label == "FLEXION RIGHT":
+            threshold = self.angle_right_flexion
+        elif self.label == "TOWEL LEFT":
+            threshold = self.angle_left_towel
+        elif self.label == "TOWEL RIGHT":
+            threshold = self.angle_right_towel
+        else:
+            threshold = 90  # Default threshold for undefined exercises
+
+        # Define state ranges based on the dynamic threshold
+        if 0 <= angle <= threshold - 60:
             state = 1
-        elif 35 <= angle <= 75:
+        elif threshold - 50 <= angle <= threshold - 10:
             state = 2
-        elif 80 <= angle <= 100:
+        elif threshold <= angle <= threshold + 10:
             state = 3
         return f"s{state}" if state else None
 
@@ -259,7 +284,7 @@ class FrozenShoulder:
                 self.list.append(state)
         return self.list
 
-    def counter(self, img, state):
+    def counter(self, state):
         if state == 's1':
             if len(self.list) == 3:
                 if self.label == "FLEXION LEFT":
@@ -299,6 +324,8 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
     resized = cv2.resize(image, dim, interpolation=inter)
     return resized
 
+
+degree_of_movement = 0
 ### ------------------------------------------ STATE SESSIONS FOR TARGET ------------------------------------------- ###
 # Armpit Stretch
 if "target_left_armpit" not in st.session_state:
@@ -403,128 +430,161 @@ app_mode = st.sidebar.selectbox("Choose the App Mode", ["Target", "Video", "Angl
 if app_mode == "Video":
     use_webcam = st.sidebar.toggle("Use Webcam")
 
-    vid = cv2.VideoCapture(0)
-    detector = FrozenShoulder("NEW_CODE_V1.h5")
-
-    # Targets
-    detector.target_left_flexion = st.session_state.target_left_flexion
-    detector.target_right_flexion = st.session_state.target_right_flexion
-
-    # Angles
-    detector.angle_left_flexion = st.session_state.angle_left_flexion
-    detector.angle_right_flexion = st.session_state.angle_right_flexion
+    if use_webcam:
 
 
+        vid = cv2.VideoCapture(0)
+        detector = FrozenShoulder("NEW_CODE_V1.h5")
 
-    i = 0  # iterations
-    warmup_frames = 60
-    frame_count = 0
+        # Targets
+        detector.target_left_flexion = st.session_state.target_left_flexion
+        detector.target_right_flexion = st.session_state.target_right_flexion
 
-    # Create the layout
-    c1, c2 = st.columns([0.7, 0.3], border=True)
-
-    with c2:
-        st.write(
-                """
-                <div style='text-align: center;'>
-                    <h4 style='text-decoration: underline; font-weight: bold;'>TARGET</h4>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        # Target
-        if st.session_state.target_left_flexion > 0:
-            text1 = st.markdown(
-                f"Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}"
-            )
-        else:
-            text1 = st.markdown("")
-
-        if st.session_state.target_right_flexion > 0:
-            text2 = st.markdown(
-                f"Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}"
-            )
-        else:
-            text2 = st.markdown("")
+        # Angles
+        detector.angle_left_flexion = st.session_state.angle_left_flexion
+        detector.angle_right_flexion = st.session_state.angle_right_flexion
 
 
-    # Video display goes in c1
-    with c1:
-        exercise_label = st.markdown("Type of Exercise")
-        stframe = st.empty()  # Video frame placeholder
 
-    # Process video frames
-    while vid.isOpened():
-        i += 1
-        success, img = vid.read()
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = detector.pose.process(imgRGB)
-        img = detector.findPose(img, False)
-        lmList = detector.findPosition(img, False)
-        if len(lmList) != 0:
-            degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[12][1:], lmList[14][1:])
-            current_state = detector.get_state(degree_of_movement)
-            detector.update_state_sequence(current_state)
-            detector.counter(img, current_state)
+        i = 0  # iterations
+        warmup_frames = 60
+        frame_count = 0
 
-            # Update the counters in the UI
-            with c2:
-                # Target shit
-                if detector.label == "FLEXION LEFT":
-                    color_left_flexion = "red"
-                    color_right_flexion = "black"
-                elif detector.label == "FLEXION RIGHT":
-                    color_left_flexion = "black"
-                    color_right_flexion = "red"
-                else:
-                    color_left_flexion = "black"
-                    color_right_flexion = "black"
+        # Create the layout
+        c1, c2 = st.columns([0.7, 0.3], border=True)
 
-                if st.session_state.target_left_flexion > 0:
-                    text1.write(
-                    f"""
-                    <div style='display: flex; justify-content: space-between; align-items: left;'>
-                        <h5 style='color: {color_left_flexion};'>Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}</h5>
+        with c2:
+            st.write(
+                    """
+                    <div style='text-align: center;'>
+                        <h4 style='text-decoration: underline; font-weight: bold;'>TARGET</h4>
                     </div>
                     """,
                     unsafe_allow_html=True,
                 )
-                else:
-                    text1.write("")
-
-                if st.session_state.target_right_flexion > 0:
-                    text2.write(
-                    f"""
-                    <div style='display: flex; justify-content: space-between; align-items: left;'>
-                        <h5 style='color: {color_right_flexion};'>Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}</h5>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
+            # Target
+            if st.session_state.target_left_flexion > 0:
+                text1 = st.markdown(
+                    f"Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}"
                 )
-                else:
-                    text2.write("")
+            else:
+                text1 = st.markdown("")
+
+            if st.session_state.target_right_flexion > 0:
+                text2 = st.markdown(
+                    f"Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}"
+                )
+            else:
+                text2 = st.markdown("")
 
 
-
-        # Display the processed frame in c1
-        imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
-        imgRGB = image_resize(image=img, width=640)
+        # Video display goes in c1
         with c1:
-            exercise_label.write(
-                f"""
-                <div style='display: flex; justify-content: space-between; align-items: center;'>
-                    <h3 style='color: red;'>Current Exercise: {detector.label}</h3>
-                    <h3 style='color: blue;'>ROM: {int(degree_of_movement)}°</h3>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            stframe.image(imgRGB, channels="BGR", use_container_width=True)
+            exercise_label = st.markdown("Type of Exercise")
+            stframe = st.empty()  # Video frame placeholder
 
-        frame_count += 1
-        if frame_count > warmup_frames:
-            img = detector.process_frame(img, results)
+        # Process video frames
+        while vid.isOpened():
+            i += 1
+            success, img = vid.read()
+            imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            results = detector.pose.process(imgRGB)
+            img = detector.findPose(img, False)
+            lmList = detector.findPosition(img, False)
+            if len(lmList) != 0:
+                degree_of_movement = detector.angle(img, lmList[11][1:], lmList[13][1:], lmList[15][1:], lmList[12][1:], lmList[14][1:], lmList[16][1:])
+                current_state = detector.get_state(degree_of_movement)
+                detector.update_state_sequence(current_state)
+                detector.counter(current_state)
 
+                # Update the counters in the UI
+                with c2:
+                    # Target shit
+                    if detector.label == "FLEXION LEFT":
+                        color_left_flexion = "red"
+                        color_right_flexion = "white"
+                    elif detector.label == "FLEXION RIGHT":
+                        color_left_flexion = "white"
+                        color_right_flexion = "red"
+                    else:
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+
+                    if st.session_state.target_left_flexion > 0:
+                        text1.write(
+                        f"""
+                        <div style='display: flex; justify-content: space-between; align-items: left;'>
+                            <h5 style='color: {color_left_flexion};'>Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}</h5>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    else:
+                        text1.write("")
+
+                    if st.session_state.target_right_flexion > 0:
+                        text2.write(
+                        f"""
+                        <div style='display: flex; justify-content: space-between; align-items: left;'>
+                            <h5 style='color: {color_right_flexion};'>Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}</h5>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    else:
+                        text2.write("")
+
+
+
+            # Display the processed frame in c1
+            imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
+            imgRGB = image_resize(image=img, width=640)
+            with c1:
+                # Dynamically fetch the threshold value for the current exercise
+                if detector.label == "ARMPIT LEFT":
+                    threshold = detector.angle_left_armpit
+                elif detector.label == "ARMPIT RIGHT":
+                    threshold = detector.angle_right_armpit
+                elif detector.label == "CIRCLE LEFT":
+                    threshold = detector.angle_left_circle
+                elif detector.label == "CIRCLE RIGHT":
+                    threshold = detector.angle_right_circle
+                elif detector.label == "CB LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "CB RIGHT":
+                    threshold = detector.angle_right_towel
+                elif detector.label == "PENDULUM LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "PENDULUM RIGHT":
+                    threshold = detector.angle_right_towel
+                elif detector.label == "FLEXION LEFT":
+                    threshold = detector.angle_left_flexion
+                elif detector.label == "FLEXION RIGHT":
+                    threshold = detector.angle_right_flexion
+                elif detector.label == "TOWEL LEFT":
+                    threshold = detector.angle_left_towel
+                elif detector.label == "TOWEL RIGHT":
+                    threshold = detector.angle_right_towel
+                else:
+                    threshold = 90  # Default threshold for undefined exercises
+
+                # Display the current exercise, ROM, and threshold
+                exercise_label.write(
+                    f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <h3 style='color: red;'>Current Exercise: {detector.label}</h3>
+                            <h3 style='color: blue;'>ROM: {int(degree_of_movement)}° / Threshold: {threshold}°</h3>
+                        </div>
+                        """,
+                    unsafe_allow_html=True,
+                )
+                stframe.image(imgRGB, channels="BGR", use_container_width=True)
+
+            frame_count += 1
+            if frame_count > warmup_frames:
+                img = detector.process_frame(img, results)
+    else:
+        pass
 
 elif app_mode == "Target":
     st.empty()
@@ -731,11 +791,3 @@ elif app_mode == "Angle":
         pass
 else:
     pass
-
-
-
-
-
-
-
-
