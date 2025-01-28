@@ -39,7 +39,7 @@ class FrozenShoulder:
 
         # Labels for exercises
         self.exercise_labels = [
-            "ARMPIT RIGHT",
+            "ARMPIT LEFT", "ARMPIT RIGHT",
             "CIRCLE LEFT", "CIRCLE RIGHT",
             "CB LEFT", "CB RIGHT",
             "PENDULUM LEFT", "PENDULUM RIGHT",
@@ -53,32 +53,89 @@ class FrozenShoulder:
         self.list = []
         self.state_sequence = []
 
-        self.counter_left_flexion = 0
-        self.counter_right_flexion = 0
-        self.counter_left_cross = 0
-        self.counter_right_cross = 0
 
-        # TARGETS
+        # -------------------------------------------- REPETITION COUNTER -------------------------------------------- #
+        self.repetition_left_armpit = 0
+        self.repetition_right_armpit = 0
         ###
-        self.target_left_armpit = 0
-        self.target_right_armpit = 0
+        self.repetition_left_circle = 0
+        self.repetition_right_circle = 0
         ###
-        self.target_left_circle = 0
-        self.target_right_circle = 0
+        self.repetition_left_cross = 0
+        self.repetition_right_cross = 0
         ###
-        self.target_left_cross = 0
-        self.target_right_cross = 0
+        self.repetition_left_pendulum = 0
+        self.repetition_right_pendulum = 0
         ###
-        self.target_left_pendulum = 0
-        self.target_right_pendulum = 0
+        self.repetition_left_flexion = 0
+        self.repetition_right_flexion = 0
         ###
-        self.target_left_flexion = 0
-        self.target_right_flexion = 0
-        ###
-        self.target_left_towel = 0
-        self.target_right_towel = 0
+        self.repetition_left_towel = 0
+        self.repetition_right_towel = 0
 
-        # ANGLE
+
+        # ------------------------------------------ REPETITION THRESHOLDS ------------------------------------------- #
+        ###
+        self.repetition_threshold_left_armpit = 0
+        self.repetition_threshold_right_armpit = 0
+        ###
+        self.repetition_threshold_left_circle = 0
+        self.repetition_threshold_right_circle = 0
+        ###
+        self.repetition_threshold_left_cross = 0
+        self.repetition_threshold_right_cross = 0
+        ###
+        self.repetition_threshold_left_pendulum = 0
+        self.repetition_threshold_right_pendulum = 0
+        ###
+        self.repetition_threshold_left_flexion = 0
+        self.repetition_threshold_right_flexion = 0
+        ###
+        self.repetition_threshold_left_towel = 0
+        self.repetition_threshold_right_towel = 0
+
+        # ----------------------------------------------- SET COUNTER ------------------------------------------------ #
+        ###
+        self.set_left_armpit = 0
+        self.set_right_armpit = 0
+        ###
+        self.set_left_circle = 0
+        self.set_right_circle = 0
+        ###
+        self.set_left_cross = 0
+        self.set_right_cross = 0
+        ###
+        self.set_left_pendulum = 0
+        self.set_right_pendulum = 0
+        ###
+        self.set_left_flexion = 0
+        self.set_right_flexion = 0
+        ###
+        self.set_left_towel = 0
+        self.set_right_towel = 0
+
+
+        # ----------------------------------------------- SET THRESHOLDS --------------------------------------------- #
+        ###
+        self.set_threshold_left_armpit = 0
+        self.set_threshold_right_armpit = 0
+        ###
+        self.set_threshold_left_circle = 0
+        self.set_threshold_right_circle = 0
+        ###
+        self.set_threshold_left_cross = 0
+        self.set_threshold_right_cross = 0
+        ###
+        self.set_threshold_left_pendulum = 0
+        self.set_threshold_right_pendulum = 0
+        ###
+        self.set_threshold_left_flexion = 0
+        self.set_threshold_right_flexion = 0
+        ###
+        self.set_threshold_left_towel = 0
+        self.set_threshold_right_towel = 0
+
+        # --------------------------------------------- ANGLE THRESHOLDS --------------------------------------------- #
         ###
         self.angle_left_armpit = 0
         self.angle_right_armpit = 0
@@ -160,8 +217,8 @@ class FrozenShoulder:
         """Display the predicted class label on the image."""
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, self.label, (10, 50), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        cv2.putText(img, "L-Flexion: {}".format(str(self.counter_left_flexion)), (510, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
-        cv2.putText(img, "R-Flexion: {}".format(str(self.counter_right_flexion)), (510, 470), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "L-Flexion: {}".format(str(self.repetition_left_flexion)), (510, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "R-Flexion: {}".format(str(self.repetition_right_flexion)), (510, 470), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
         return img
 
     def detect_movement(self, lm_list):
@@ -288,13 +345,13 @@ class FrozenShoulder:
         if state == 's1':
             if len(self.list) == 3:
                 if self.label == "FLEXION LEFT":
-                    self.counter_left_flexion += 1
+                    self.repetition_left_flexion += 1
                 elif self.label == "FLEXION RIGHT":
-                    self.counter_right_flexion += 1
+                    self.repetition_right_flexion += 1
                 elif self.label == "CIRCLE LEFT":
-                    self.counter_left_cross += 1
+                    self.repetition_left_cross += 1
                 elif self.label == "CIRCLE RIGHT":
-                    self.counter_right_cross += 1
+                    self.repetition_right_cross += 1
                 else:
                     pass
 
@@ -303,7 +360,7 @@ class FrozenShoulder:
 
             self.list = []
 
-        return self.counter_left_flexion, self.counter_right_flexion
+        return self.repetition_left_flexion, self.repetition_right_flexion
 
 
 def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -326,44 +383,81 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 
 degree_of_movement = 0
-### ------------------------------------------ STATE SESSIONS FOR TARGET ------------------------------------------- ###
+### --------------------------------- STATE SESSIONS FOR REPETITION THRESHOLDS ------------------------------------- ###
 # Armpit Stretch
-if "target_left_armpit" not in st.session_state:
-    st.session_state.target_left_armpit = 0
-if "target_right_armpit" not in st.session_state:
-    st.session_state.target_right_armpit = 0
+if "repetition_threshold_left_armpit" not in st.session_state:
+    st.session_state.repetition_threshold_left_armpit = 0
+if "repetition_threshold_right_armpit" not in st.session_state:
+    st.session_state.repetition_threshold_right_armpit = 0
 
 # Arm Circles
-if "target_left_circle" not in st.session_state:
-    st.session_state.target_left_circle = 0
-if "target_right_circle" not in st.session_state:
-    st.session_state.target_right_circle = 0
+if "repetition_threshold_left_circle" not in st.session_state:
+    st.session_state.repetition_threshold_left_circle = 10
+if "repetition_threshold_right_circle" not in st.session_state:
+    st.session_state.repetition_threshold_right_circle = 0
 
 # Cross Body Stretch
-if "target_left_cross" not in st.session_state:
-    st.session_state.target_left_cross = 0
-if "target_right_cross" not in st.session_state:
-    st.session_state.target_right_cross = 0
+if "repetition_threshold_left_cross" not in st.session_state:
+    st.session_state.repetition_threshold_left_cross = 0
+if "repetition_threshold_right_cross" not in st.session_state:
+    st.session_state.repetition_threshold_right_cross = 0
 
 # Pendulum Swing
-if "target_left_pendulum" not in st.session_state:
-    st.session_state.target_left_pendulum = 0
-if "target_right_pendulum" not in st.session_state:
-    st.session_state.target_right_pendulum = 0
+if "repetition_threshold_left_pendulum" not in st.session_state:
+    st.session_state.repetition_threshold_left_pendulum = 10
+if "repetition_threshold_right_pendulum" not in st.session_state:
+    st.session_state.repetition_threshold_right_pendulum = 0
 
 # Shoulder Flexion
-if "target_left_flexion" not in st.session_state:
-    st.session_state.target_left_flexion = 0
-if "target_right_flexion" not in st.session_state:
-    st.session_state.target_right_flexion = 10
+if "repetition_threshold_left_flexion" not in st.session_state:
+    st.session_state.repetition_threshold_left_flexion = 10
+if "repetition_threshold_right_flexion" not in st.session_state:
+    st.session_state.repetition_threshold_right_flexion = 10
 
 # Towel Stretch
-if "target_left_towel" not in st.session_state:
-    st.session_state.target_left_towel = 0
-if "target_right_towel" not in st.session_state:
-    st.session_state.target_right_towel = 0
+if "repetition_threshold_left_towel" not in st.session_state:
+    st.session_state.repetition_threshold_left_towel = 0
+if "repetition_threshold_right_towel" not in st.session_state:
+    st.session_state.repetition_threshold_right_towel = 0
 
-### ------------------------------------------ STATE SESSIONS FOR ANGLE ------------------------------------------- ###
+### -------------------------------------- STATE SESSIONS FOR SET THRESHOLDS --------------------------------------- ###
+# Armpit Stretch
+if "set_threshold_left_armpit" not in st.session_state:
+    st.session_state.set_threshold_left_armpit = 0
+if "set_threshold_right_armpit" not in st.session_state:
+    st.session_state.set_threshold_right_armpit = 0
+
+# Arm Circles
+if "set_threshold_left_circle" not in st.session_state:
+    st.session_state.set_threshold_left_circle = 0
+if "set_threshold_right_circle" not in st.session_state:
+    st.session_state.set_threshold_right_circle = 0
+
+# Cross Body Stretch
+if "set_threshold_left_cross" not in st.session_state:
+    st.session_state.set_threshold_left_cross = 0
+if "set_threshold_right_cross" not in st.session_state:
+    st.session_state.set_threshold_right_cross = 0
+
+# Pendulum Swing
+if "set_threshold_left_pendulum" not in st.session_state:
+    st.session_state.set_threshold_left_pendulum = 0
+if "set_threshold_right_pendulum" not in st.session_state:
+    st.session_state.set_threshold_right_pendulum = 0
+
+# Shoulder Flexion
+if "set_threshold_left_flexion" not in st.session_state:
+    st.session_state.set_threshold_left_flexion = 10
+if "set_threshold_right_flexion" not in st.session_state:
+    st.session_state.set_threshold_right_flexion = 10
+
+# Towel Stretch
+if "set_threshold_left_towel" not in st.session_state:
+    st.session_state.set_threshold_left_towel = 0
+if "set_threshold_right_towel" not in st.session_state:
+    st.session_state.set_threshold_right_towel = 0
+
+### ------------------------------------ STATE SESSIONS FOR ANGLE THRESHOLDS --------------------------------------- ###
 # Armpit Stretch
 if "angle_left_armpit" not in st.session_state:
     st.session_state.angle_left_armpit = 90
@@ -434,13 +528,15 @@ if app_mode == "Video":
 
 
         vid = cv2.VideoCapture(0)
-        detector = FrozenShoulder("NEW_CODE_V1.h5")
+        detector = FrozenShoulder("NEW_CODE_V3.h5")
 
-        # Targets
-        detector.target_left_flexion = st.session_state.target_left_flexion
-        detector.target_right_flexion = st.session_state.target_right_flexion
-
-        # Angles
+        # REPETITION THRESHOLD
+        detector.repetition_threshold_left_flexion = st.session_state.repetition_threshold_left_flexion
+        detector.repetition_threshold_right_flexion = st.session_state.repetition_threshold_right_flexion
+        # SET THRESHOLD
+        detector.set_threshold_left_flexion = st.session_state.set_threshold_left_flexion
+        detector.set_threshold_right_flexion = st.session_state.set_threshold_right_flexion
+        # Angles THRESHOLD
         detector.angle_left_flexion = st.session_state.angle_left_flexion
         detector.angle_right_flexion = st.session_state.angle_right_flexion
 
@@ -463,16 +559,25 @@ if app_mode == "Video":
                     unsafe_allow_html=True,
                 )
             # Target
-            if st.session_state.target_left_flexion > 0:
+            if st.session_state.repetition_threshold_left_flexion > 0:
                 text1 = st.markdown(
-                    f"Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}"
+                    f"Left Shoulder Flexion: {detector.repetition_left_flexion} / {st.session_state.repetition_threshold_left_flexion}"
                 )
             else:
                 text1 = st.markdown("")
 
-            if st.session_state.target_right_flexion > 0:
+            if st.session_state.repetition_threshold_right_flexion > 0:
                 text2 = st.markdown(
-                    f"Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}"
+                f"""
+                <div style='display: flex; justify-content: space-between; align-items: center;'>
+                    <span style='font-size: 18px; font-weight: bold; color: red;'>Exercise: Left Shoulder Flexion</span>
+                    <div style='display: flex; gap: 20px;'>
+                        <span style='color: blue; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_flexion} / {st.session_state.repetition_threshold_left_flexion}</span>
+                        <span style='color: green; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_flexion} / {st.session_state.set_repetition_threshold_left_flexion}</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
                 )
             else:
                 text2 = st.markdown("")
@@ -510,11 +615,11 @@ if app_mode == "Video":
                         color_left_flexion = "white"
                         color_right_flexion = "white"
 
-                    if st.session_state.target_left_flexion > 0:
+                    if st.session_state.repetition_threshold_left_flexion > 0:
                         text1.write(
                         f"""
                         <div style='display: flex; justify-content: space-between; align-items: left;'>
-                            <h5 style='color: {color_left_flexion};'>Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.target_left_flexion}</h5>
+                            <h5 style='color: {color_left_flexion};'>Left Shoulder Flexion: {detector.repetition_left_flexion} / {st.session_state.repetition_threshold_left_flexion}</h5>
                         </div>
                         """,
                         unsafe_allow_html=True,
@@ -522,15 +627,19 @@ if app_mode == "Video":
                     else:
                         text1.write("")
 
-                    if st.session_state.target_right_flexion > 0:
+                    if st.session_state.repetition_threshold_right_flexion > 0:
                         text2.write(
-                        f"""
-                        <div style='display: flex; justify-content: space-between; align-items: left;'>
-                            <h5 style='color: {color_right_flexion};'>Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.target_right_flexion}</h5>
+                         f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: red;'>Exercise: Left Shoulder Flexion</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: blue; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_flexion} / {st.session_state.repetition_threshold_left_flexion}</span>
+                                <span style='color: green; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_flexion} / {st.session_state.set_repetition_threshold_left_flexion}</span>
+                            </div>
                         </div>
                         """,
                         unsafe_allow_html=True,
-                    )
+                        )
                     else:
                         text2.write("")
 
@@ -593,48 +702,48 @@ elif app_mode == "Target":
     with T1:
         # Armpit Stretch Targets
         st.subheader("Armpit Stretch")
-        st.session_state.target_left_armpit = st.number_input(
+        st.session_state.repetition_threshold_left_armpit = st.number_input(
             "Target Repetitions for Left Armpit Stretch",
             step=1,
-            value=st.session_state.target_left_armpit,
+            value=st.session_state.repetition_threshold_left_armpit,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_armpit = st.number_input(
+        st.session_state.repetition_threshold_right_armpit = st.number_input(
             "Target Repetitions for Right Armpit Stretch",
             step=1,
-            value=st.session_state.target_right_armpit,
+            value=st.session_state.repetition_threshold_right_armpit,
             placeholder="Enter Amount..."
         )
         pass
     with T2:
         # Arm Circles Targets
         st.subheader("Arm Circles")
-        st.session_state.target_left_circle = st.number_input(
+        st.session_state.repetition_threshold_left_circle = st.number_input(
             "Target Repetitions for Left Arm Circles",
             step=1,
-            value=st.session_state.target_left_circle,
+            value=st.session_state.repetition_threshold_left_circle,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_circle = st.number_input(
+        st.session_state.repetition_threshold_right_circle = st.number_input(
             "Target Repetitions for Right Arm Circles",
             step=1,
-            value=st.session_state.target_right_circle,
+            value=st.session_state.repetition_threshold_right_circle,
             placeholder="Enter Amount..."
         )
         pass
     with T3:
         # Cross Body Stretch Targets
         st.subheader("Cross Body Stretch")
-        st.session_state.target_left_cross = st.number_input(
+        st.session_state.repetition_threshold_left_cross = st.number_input(
             "Target Repetitions for Left Cross Body Stretch",
             step=1,
-            value=st.session_state.target_left_cross,
+            value=st.session_state.repetition_threshold_left_cross,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_cross = st.number_input(
+        st.session_state.repetition_threshold_right_cross = st.number_input(
             "Target Repetitions for Right Cross Body Stretch",
             step=1,
-            value=st.session_state.target_right_cross,
+            value=st.session_state.repetition_threshold_right_cross,
             placeholder="Enter Amount..."
         )
         pass
@@ -642,48 +751,48 @@ elif app_mode == "Target":
     with T4:
         # Pendulum Swing Targets
         st.subheader("Pendulum Swing")
-        st.session_state.target_left_pendulum = st.number_input(
+        st.session_state.repetition_threshold_left_pendulum = st.number_input(
             "Target Repetitions for Left Pendulum Swing",
             step=1,
-            value=st.session_state.target_left_pendulum,
+            value=st.session_state.repetition_threshold_left_pendulum,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_pendulum = st.number_input(
+        st.session_state.repetition_threshold_right_pendulum = st.number_input(
             "Target Repetitions for Right Pendulum Swing",
             step=1,
-            value=st.session_state.target_right_pendulum,
+            value=st.session_state.repetition_threshold_right_pendulum,
             placeholder="Enter Amount..."
         )
         pass
     with T5:
         # Shoulder Flexion Targets
         st.subheader("Shoulder Flexion")
-        st.session_state.target_left_flexion = st.number_input(
+        st.session_state.repetition_threshold_left_flexion = st.number_input(
             "Target Repetitions for Left Shoulder Flexion",
             step=1,
-            value=st.session_state.target_left_flexion,
+            value=st.session_state.repetition_threshold_left_flexion,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_flexion = st.number_input(
+        st.session_state.repetition_threshold_right_flexion = st.number_input(
             "Target Repetitions for Right Shoulder Flexion",
             step=1,
-            value=st.session_state.target_right_flexion,
+            value=st.session_state.repetition_threshold_right_flexion,
             placeholder="Enter Amount..."
         )
         pass
     with T6:
         # Towel Stretch Targets
         st.subheader("Towel Stretch")
-        st.session_state.target_left_towel = st.number_input(
+        st.session_state.repetition_threshold_left_towel = st.number_input(
             "Target Repetitions for Left Towel Stretch",
             step=1,
-            value=st.session_state.target_left_towel,
+            value=st.session_state.repetition_threshold_left_towel,
             placeholder="Enter Amount..."
         )
-        st.session_state.target_right_towel = st.number_input(
+        st.session_state.repetition_threshold_right_towel = st.number_input(
             "Target Repetitions for Right Towel Stretch",
             step=1,
-            value=st.session_state.target_right_towel,
+            value=st.session_state.repetition_threshold_right_towel,
             placeholder="Enter Amount..."
         )
         pass

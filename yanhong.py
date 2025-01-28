@@ -53,12 +53,28 @@ class FrozenShoulder:
         self.list = []
         self.state_sequence = []
 
-        self.counter_left_flexion = 0
-        self.counter_right_flexion = 0
-        self.counter_left_cross = 0
-        self.counter_right_cross = 0
 
-        # ------------------------------------------- REPETITION THRESHOLDS ------------------------------------------ #
+        # -------------------------------------------- REPETITION COUNTER -------------------------------------------- #
+        self.repetition_left_armpit = 0
+        self.repetition_right_armpit = 0
+        ###
+        self.repetition_left_circle = 0
+        self.repetition_right_circle = 0
+        ###
+        self.repetition_left_cross = 0
+        self.repetition_right_cross = 0
+        ###
+        self.repetition_left_pendulum = 0
+        self.repetition_right_pendulum = 0
+        ###
+        self.repetition_left_flexion = 0
+        self.repetition_right_flexion = 0
+        ###
+        self.repetition_left_towel = 0
+        self.repetition_right_towel = 0
+
+
+        # ------------------------------------------ REPETITION THRESHOLDS ------------------------------------------- #
         ###
         self.repetition_threshold_left_armpit = 0
         self.repetition_threshold_right_armpit = 0
@@ -78,25 +94,66 @@ class FrozenShoulder:
         self.repetition_threshold_left_towel = 0
         self.repetition_threshold_right_towel = 0
 
-        # ------------------------------------------------ ANGLE THRESHOLDS ------------------------------------------ #
+        # ----------------------------------------------- SET COUNTER ------------------------------------------------ #
         ###
-        self.angle_threshold_left_armpit = 0
-        self.angle_threshold_right_armpit = 0
+        self.set_left_armpit = 0
+        self.set_right_armpit = 0
         ###
-        self.angle_threshold_left_circle = 0
-        self.angle_threshold_right_circle = 0
+        self.set_left_circle = 0
+        self.set_right_circle = 0
         ###
-        self.angle_threshold_left_cross = 0
-        self.angle_threshold_right_cross = 0
+        self.set_left_cross = 0
+        self.set_right_cross = 0
         ###
-        self.angle_threshold_left_pendulum = 0
-        self.angle_threshold_right_pendulum = 0
+        self.set_left_pendulum = 0
+        self.set_right_pendulum = 0
         ###
-        self.angle_threshold_left_flexion = 0
-        self.angle_threshold_right_flexion = 0
+        self.set_left_flexion = 0
+        self.set_right_flexion = 0
         ###
-        self.angle_threshold_left_towel = 0
-        self.angle_threshold_right_towel = 0
+        self.set_left_towel = 0
+        self.set_right_towel = 0
+
+
+        # ----------------------------------------------- SET THRESHOLDS --------------------------------------------- #
+        ###
+        self.set_threshold_left_armpit = 0
+        self.set_threshold_right_armpit = 0
+        ###
+        self.set_threshold_left_circle = 0
+        self.set_threshold_right_circle = 0
+        ###
+        self.set_threshold_left_cross = 0
+        self.set_threshold_right_cross = 0
+        ###
+        self.set_threshold_left_pendulum = 0
+        self.set_threshold_right_pendulum = 0
+        ###
+        self.set_threshold_left_flexion = 0
+        self.set_threshold_right_flexion = 0
+        ###
+        self.set_threshold_left_towel = 0
+        self.set_threshold_right_towel = 0
+
+        # --------------------------------------------- ANGLE THRESHOLDS --------------------------------------------- #
+        ###
+        self.angle_left_armpit = 0
+        self.angle_right_armpit = 0
+        ###
+        self.angle_left_circle = 0
+        self.angle_right_circle = 0
+        ###
+        self.angle_left_cross = 0
+        self.angle_right_cross = 0
+        ###
+        self.angle_left_pendulum = 0
+        self.angle_right_pendulum = 0
+        ###
+        self.angle_left_flexion = 0
+        self.angle_right_flexion = 0
+        ###
+        self.angle_left_towel = 0
+        self.angle_right_towel = 0
         pass
 
     def findPose(self, img, draw=True):
@@ -160,8 +217,8 @@ class FrozenShoulder:
         """Display the predicted class label on the image."""
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, self.label, (10, 50), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        cv2.putText(img, "L-Flexion: {}".format(str(self.counter_left_flexion)), (510, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
-        cv2.putText(img, "R-Flexion: {}".format(str(self.counter_right_flexion)), (510, 470), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "L-Flexion: {}".format(str(self.repetition_left_flexion)), (510, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(img, "R-Flexion: {}".format(str(self.repetition_right_flexion)), (510, 470), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
         return img
 
     def detect_movement(self, lm_list):
@@ -239,29 +296,29 @@ class FrozenShoulder:
 
         # Dynamically fetch angle thresholds
         if self.label == "ARMPIT LEFT":
-            threshold = self.angle_threshold_left_armpit
+            threshold = self.angle_left_armpit
         elif self.label == "ARMPIT RIGHT":
-            threshold = self.angle_threshold_right_armpit
+            threshold = self.angle_right_armpit
         elif self.label == "CIRCLE LEFT":
-            threshold = self.angle_threshold_left_circle
+            threshold = self.angle_left_circle
         elif self.label == "CIRCLE RIGHT":
-            threshold = self.angle_threshold_right_circle
+            threshold = self.angle_right_circle
         elif self.label == "CB LEFT":
-            threshold = self.angle_threshold_left_towel
+            threshold = self.angle_left_towel
         elif self.label == "CB RIGHT":
-            threshold = self.angle_threshold_right_towel
+            threshold = self.angle_right_towel
         elif self.label == "PENDULUM LEFT":
-            threshold = self.angle_threshold_left_towel
+            threshold = self.angle_left_towel
         elif self.label == "PENDULUM RIGHT":
-            threshold = self.angle_threshold_right_towel
+            threshold = self.angle_right_towel
         elif self.label == "FLEXION LEFT":
-            threshold = self.angle_threshold_left_flexion
+            threshold = self.angle_left_flexion
         elif self.label == "FLEXION RIGHT":
-            threshold = self.angle_threshold_right_flexion
+            threshold = self.angle_right_flexion
         elif self.label == "TOWEL LEFT":
-            threshold = self.angle_threshold_left_towel
+            threshold = self.angle_left_towel
         elif self.label == "TOWEL RIGHT":
-            threshold = self.angle_threshold_right_towel
+            threshold = self.angle_right_towel
         else:
             threshold = 90  # Default threshold for undefined exercises
 
@@ -288,13 +345,13 @@ class FrozenShoulder:
         if state == 's1':
             if len(self.list) == 3:
                 if self.label == "FLEXION LEFT":
-                    self.counter_left_flexion += 1
+                    self.repetition_left_flexion += 1
                 elif self.label == "FLEXION RIGHT":
-                    self.counter_right_flexion += 1
+                    self.repetition_right_flexion += 1
                 elif self.label == "CIRCLE LEFT":
-                    self.counter_left_cross += 1
+                    self.repetition_left_cross += 1
                 elif self.label == "CIRCLE RIGHT":
-                    self.counter_right_cross += 1
+                    self.repetition_right_cross += 1
                 else:
                     pass
 
@@ -303,7 +360,7 @@ class FrozenShoulder:
 
             self.list = []
 
-        return self.counter_left_flexion, self.counter_right_flexion
+        return self.repetition_left_flexion, self.repetition_right_flexion
 
 
 def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -326,8 +383,7 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 
 degree_of_movement = 0
-### -------------------------------------- STATE SESSIONS FOR REPETITION THRESHOLDS -------------------------------- ###
-
+### --------------------------------- STATE SESSIONS FOR REPETITION THRESHOLDS ------------------------------------- ###
 # Armpit Stretch
 if "repetition_threshold_left_armpit" not in st.session_state:
     st.session_state.repetition_threshold_left_armpit = 0
@@ -354,7 +410,7 @@ if "repetition_threshold_right_pendulum" not in st.session_state:
 
 # Shoulder Flexion
 if "repetition_threshold_left_flexion" not in st.session_state:
-    st.session_state.repetition_threshold_left_flexion = 0
+    st.session_state.repetition_threshold_left_flexion = 10
 if "repetition_threshold_right_flexion" not in st.session_state:
     st.session_state.repetition_threshold_right_flexion = 10
 
@@ -364,42 +420,79 @@ if "repetition_threshold_left_towel" not in st.session_state:
 if "repetition_threshold_right_towel" not in st.session_state:
     st.session_state.repetition_threshold_right_towel = 0
 
-### ------------------------------------------ STATE SESSIONS FOR ANGLE ------------------------------------------- ###
+### -------------------------------------- STATE SESSIONS FOR SET THRESHOLDS --------------------------------------- ###
 # Armpit Stretch
-if "angle_threshold_left_armpit" not in st.session_state:
-    st.session_state.angle_threshold_left_armpit = 90
-if "angle_threshold_right_armpit" not in st.session_state:
-    st.session_state.angle_threshold_right_armpit = 90
+if "set_threshold_left_armpit" not in st.session_state:
+    st.session_state.set_threshold_left_armpit = 0
+if "set_threshold_right_armpit" not in st.session_state:
+    st.session_state.set_threshold_right_armpit = 0
 
 # Arm Circles
-if "angle_threshold_left_circle" not in st.session_state:
-    st.session_state.angle_threshold_left_circle = 90
-if "angle_threshold_right_circle" not in st.session_state:
-    st.session_state.angle_threshold_right_circle = 90
+if "set_threshold_left_circle" not in st.session_state:
+    st.session_state.set_threshold_left_circle = 0
+if "set_threshold_right_circle" not in st.session_state:
+    st.session_state.set_threshold_right_circle = 0
 
 # Cross Body Stretch
-if "angle_threshold_left_cross" not in st.session_state:
-    st.session_state.angle_threshold_left_cross = 90
-if "angle_threshold_right_cross" not in st.session_state:
-    st.session_state.angle_threshold_right_cross = 90
+if "set_threshold_left_cross" not in st.session_state:
+    st.session_state.set_threshold_left_cross = 0
+if "set_threshold_right_cross" not in st.session_state:
+    st.session_state.set_threshold_right_cross = 0
 
 # Pendulum Swing
-if "angle_threshold_left_pendulum" not in st.session_state:
-    st.session_state.angle_threshold_left_pendulum = 90
-if "angle_threshold_right_pendulum" not in st.session_state:
-    st.session_state.angle_threshold_right_pendulum = 90
+if "set_threshold_left_pendulum" not in st.session_state:
+    st.session_state.set_threshold_left_pendulum = 0
+if "set_threshold_right_pendulum" not in st.session_state:
+    st.session_state.set_threshold_right_pendulum = 0
 
 # Shoulder Flexion
-if "angle_threshold_left_flexion" not in st.session_state:
-    st.session_state.angle_threshold_left_flexion = 90
-if "angle_threshold_right_flexion" not in st.session_state:
-    st.session_state.angle_threshold_right_flexion = 90
+if "set_threshold_left_flexion" not in st.session_state:
+    st.session_state.set_threshold_left_flexion = 10
+if "set_threshold_right_flexion" not in st.session_state:
+    st.session_state.set_threshold_right_flexion = 10
 
 # Towel Stretch
-if "angle_threshold_left_towel" not in st.session_state:
-    st.session_state.angle_threshold_left_towel = 90
-if "angle_threshold_right_towel" not in st.session_state:
-    st.session_state.angle_threshold_right_towel = 90
+if "set_threshold_left_towel" not in st.session_state:
+    st.session_state.set_threshold_left_towel = 0
+if "set_threshold_right_towel" not in st.session_state:
+    st.session_state.set_threshold_right_towel = 0
+
+### ------------------------------------ STATE SESSIONS FOR ANGLE THRESHOLDS --------------------------------------- ###
+# Armpit Stretch
+if "angle_left_armpit" not in st.session_state:
+    st.session_state.angle_left_armpit = 90
+if "angle_right_armpit" not in st.session_state:
+    st.session_state.angle_right_armpit = 90
+
+# Arm Circles
+if "angle_left_circle" not in st.session_state:
+    st.session_state.angle_left_circle = 90
+if "angle_right_circle" not in st.session_state:
+    st.session_state.angle_right_circle = 90
+
+# Cross Body Stretch
+if "angle_left_cross" not in st.session_state:
+    st.session_state.angle_left_cross = 90
+if "angle_right_cross" not in st.session_state:
+    st.session_state.angle_right_cross = 90
+
+# Pendulum Swing
+if "angle_left_pendulum" not in st.session_state:
+    st.session_state.angle_left_pendulum = 90
+if "angle_right_pendulum" not in st.session_state:
+    st.session_state.angle_right_pendulum = 90
+
+# Shoulder Flexion
+if "angle_left_flexion" not in st.session_state:
+    st.session_state.angle_left_flexion = 90
+if "angle_right_flexion" not in st.session_state:
+    st.session_state.angle_right_flexion = 90
+
+# Towel Stretch
+if "angle_left_towel" not in st.session_state:
+    st.session_state.angle_left_towel = 90
+if "angle_right_towel" not in st.session_state:
+    st.session_state.angle_right_towel = 90
 
 ### ------------------------------------ START OF USER INTERFACE CUSTOMISATIONS ------------------------------------ ###
 st.set_page_config(layout="wide")
@@ -435,15 +528,17 @@ if app_mode == "Video":
 
 
         vid = cv2.VideoCapture(0)
-        detector = FrozenShoulder("NEW_CODE_V1.h5")
+        detector = FrozenShoulder("NEW_CODE_V4.h5")
 
-        # Targets
+        # REPETITION THRESHOLD
         detector.repetition_threshold_left_flexion = st.session_state.repetition_threshold_left_flexion
         detector.repetition_threshold_right_flexion = st.session_state.repetition_threshold_right_flexion
-
-        # Angles
-        detector.angle_threshold_left_flexion = st.session_state.angle_threshold_left_flexion
-        detector.angle_threshold_right_flexion = st.session_state.angle_threshold_right_flexion
+        # SET THRESHOLD
+        detector.set_threshold_left_flexion = st.session_state.set_threshold_left_flexion
+        detector.set_threshold_right_flexion = st.session_state.set_threshold_right_flexion
+        # Angles THRESHOLD
+        detector.angle_left_flexion = st.session_state.angle_left_flexion
+        detector.angle_right_flexion = st.session_state.angle_right_flexion
 
 
 
@@ -464,19 +559,70 @@ if app_mode == "Video":
                     unsafe_allow_html=True,
                 )
             # Target
-            if st.session_state.repetition_threshold_left_flexion > 0:
-                text1 = st.markdown(
-                    f"Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.repetition_threshold_left_flexion}"
-                )
+            if st.session_state.repetition_threshold_left_armpit > 0 or st.session_state.set_threshold_left_armpit > 0:
+                text1 = st.markdown("")
             else:
                 text1 = st.markdown("")
 
-            if st.session_state.repetition_threshold_right_flexion > 0:
-                text2 = st.markdown(
-                    f"Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.repetition_threshold_right_flexion}"
-                )
+            if st.session_state.repetition_threshold_right_armpit > 0 or st.session_state.set_threshold_right_armpit > 0:
+                text2 = st.markdown("")
             else:
                 text2 = st.markdown("")
+
+            # Arm Circles
+            if st.session_state.repetition_threshold_left_circle > 0 or st.session_state.set_threshold_left_circle > 0:
+                text3 = st.markdown("")
+            else:
+                text3 = st.markdown("")
+
+            if st.session_state.repetition_threshold_right_circle > 0 or st.session_state.set_threshold_right_circle > 0:
+                text4 = st.markdown("")
+            else:
+                text4 = st.markdown("")
+
+            # Cross Body Stretch
+            if st.session_state.repetition_threshold_left_cross > 0 or st.session_state.set_threshold_left_cross > 0:
+                text5 = st.markdown("")
+            else:
+                text5 = st.markdown("")
+
+            if st.session_state.repetition_threshold_right_cross > 0 or st.session_state.set_threshold_right_cross > 0:
+                text6 = st.markdown("")
+            else:
+                text6 = st.markdown("")
+
+            # Pendulum Swing
+            if st.session_state.repetition_threshold_left_pendulum > 0 or st.session_state.set_threshold_left_pendulum > 0:
+                text7 = st.markdown("")
+            else:
+                text7 = st.markdown("")
+
+            if st.session_state.repetition_threshold_right_pendulum > 0 or st.session_state.set_threshold_right_pendulum > 0:
+                text8 = st.markdown("")
+            else:
+                text8 = st.markdown("")
+
+            # Shoulder Flexion
+            if st.session_state.repetition_threshold_left_flexion > 0 or st.session_state.set_threshold_left_flexion > 0:
+                text9 = st.markdown("")
+            else:
+                text9 = st.markdown("")
+
+            if st.session_state.repetition_threshold_right_flexion > 0 or st.session_state.set_threshold_right_flexion > 0:
+                text10 = st.markdown("")
+            else:
+                text10 = st.markdown("")
+
+            # Towel Stretch
+            if st.session_state.repetition_threshold_left_towel > 0 or st.session_state.set_threshold_left_towel > 0:
+                text11 = st.markdown("")
+            else:
+                text11 = st.markdown("")
+
+            if st.session_state.repetition_threshold_right_towel > 0 or st.session_state.set_threshold_right_towel > 0:
+                text12 = st.markdown("")
+            else:
+                text12 = st.markdown("")
 
 
         # Video display goes in c1
@@ -501,41 +647,374 @@ if app_mode == "Video":
                 # Update the counters in the UI
                 with c2:
                     # Target shit
-                    if detector.label == "FLEXION LEFT":
+                    if detector.label == "ARMPIT LEFT":
+                        color_left_armpit = "red"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "ARMPIT RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "red"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "CIRCLE LEFT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "red"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "CIRCLE RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "red"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "CB LEFT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "red"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "CB RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "red"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "FLEXION LEFT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
                         color_left_flexion = "red"
                         color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
                     elif detector.label == "FLEXION RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
                         color_left_flexion = "white"
                         color_right_flexion = "red"
-                    else:
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "PENDULUM LEFT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
                         color_left_flexion = "white"
                         color_right_flexion = "white"
+                        color_left_pendulum = "red"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "PENDULUM RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "red"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
+                    elif detector.label == "TOWEL LEFT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "red"
+                        color_right_towel = "white"
+                    elif detector.label == "TOWEL RIGHT":
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "red"
+                    else:
+                        color_left_armpit = "white"
+                        color_right_armpit = "white"
+                        color_left_circle = "white"
+                        color_right_circle = "white"
+                        color_left_cross = "white"
+                        color_right_cross = "white"
+                        color_left_flexion = "white"
+                        color_right_flexion = "white"
+                        color_left_pendulum = "white"
+                        color_right_pendulum = "white"
+                        color_left_towel = "white"
+                        color_right_towel = "white"
 
-                    if st.session_state.repetition_threshold_left_flexion > 0:
+
+                    # Armpit Stretch
+                    if st.session_state.repetition_threshold_left_armpit > 0 or st.session_state.set_threshold_left_armpit > 0:
                         text1.write(
-                        f"""
-                        <div style='display: flex; justify-content: space-between; align-items: left;'>
-                            <h5 style='color: {color_left_flexion};'>Left Shoulder Flexion: {detector.counter_left_flexion} / {st.session_state.repetition_threshold_left_flexion}</h5>
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_armpit};'>> Left Armpit Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_armpit}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_armpit} / {st.session_state.repetition_threshold_left_armpit}</span>
+                                <span style='color: {color_left_armpit}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_armpit} / {st.session_state.set_threshold_left_armpit}</span>
+                            </div>
                         </div>
                         """,
-                        unsafe_allow_html=True,
-                    )
+                            unsafe_allow_html=True,
+                        )
                     else:
                         text1.write("")
 
-                    if st.session_state.repetition_threshold_right_flexion > 0:
+                    if st.session_state.repetition_threshold_right_armpit > 0 or st.session_state.set_threshold_right_armpit > 0:
                         text2.write(
-                        f"""
-                        <div style='display: flex; justify-content: space-between; align-items: left;'>
-                            <h5 style='color: {color_right_flexion};'>Right Shoulder Flexion: {detector.counter_right_flexion} / {st.session_state.repetition_threshold_right_flexion}</h5>
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_armpit};'>> Right Armpit Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_armpit}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_armpit} / {st.session_state.repetition_threshold_right_armpit}</span>
+                                <span style='color: {color_right_armpit}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_armpit} / {st.session_state.set_threshold_right_armpit}</span>
+                            </div>
                         </div>
                         """,
-                        unsafe_allow_html=True,
-                    )
+                            unsafe_allow_html=True,
+                        )
                     else:
                         text2.write("")
 
+                    # Arm Circles
+                    if st.session_state.repetition_threshold_left_circle > 0 or st.session_state.set_threshold_left_circle > 0:
+                        text3.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_circle};'>> Left Arm Circles</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_circle}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_circle} / {st.session_state.repetition_threshold_left_circle}</span>
+                                <span style='color: {color_left_circle}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_circle} / {st.session_state.set_threshold_left_circle}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text3.write("")
 
+                    if st.session_state.repetition_threshold_right_circle > 0 or st.session_state.set_threshold_right_circle > 0:
+                        text4.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_circle};'>> Right Arm Circles</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_circle}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_circle} / {st.session_state.repetition_threshold_right_circle}</span>
+                                <span style='color: {color_right_circle}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_circle} / {st.session_state.set_threshold_right_circle}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text4.write("")
+
+                    # Cross Body Stretch
+                    if st.session_state.repetition_threshold_left_cross > 0 or st.session_state.set_threshold_left_cross > 0:
+                        text5.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_cross};'>> Left Cross Body Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_cross}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_cross} / {st.session_state.repetition_threshold_left_cross}</span>
+                                <span style='color: {color_left_cross}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_cross} / {st.session_state.set_threshold_left_cross}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text5.write("")
+
+                    if st.session_state.repetition_threshold_right_cross > 0 or st.session_state.set_threshold_right_cross > 0:
+                        text6.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_cross};'>> Right Cross Body Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_cross}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_cross} / {st.session_state.repetition_threshold_right_cross}</span>
+                                <span style='color: {color_right_cross}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_cross} / {st.session_state.set_threshold_right_cross}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text6.write("")
+
+                    # Pendulum Swing
+                    if st.session_state.repetition_threshold_left_pendulum > 0 or st.session_state.set_threshold_left_pendulum > 0:
+                        text7.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_pendulum};'>> Left Pendulum Swing</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_pendulum}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_pendulum} / {st.session_state.repetition_threshold_left_pendulum}</span>
+                                <span style='color: {color_left_pendulum}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_pendulum} / {st.session_state.set_threshold_left_pendulum}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text7.write("")
+
+                    if st.session_state.repetition_threshold_right_pendulum > 0 or st.session_state.set_threshold_right_pendulum > 0:
+                        text8.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_pendulum};'>> Right Pendulum Swing</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_pendulum}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_pendulum} / {st.session_state.repetition_threshold_right_pendulum}</span>
+                                <span style='color: {color_right_pendulum}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_pendulum} / {st.session_state.set_threshold_right_pendulum}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text8.write("")
+
+                    # Shoulder Flexion
+                    if st.session_state.repetition_threshold_left_flexion > 0 or st.session_state.set_threshold_left_flexion > 0:
+                        text9.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_flexion};'>> Left Shoulder Flexion</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_flexion}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_flexion} / {st.session_state.repetition_threshold_left_flexion}</span>
+                                <span style='color: {color_left_flexion}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_flexion} / {st.session_state.set_threshold_left_flexion}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text9.write("")
+
+                    if st.session_state.repetition_threshold_right_flexion > 0 or st.session_state.set_threshold_right_flexion > 0:
+                        text10.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_flexion};'>> Right Shoulder Flexion</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_flexion}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_flexion} / {st.session_state.repetition_threshold_right_flexion}</span>
+                                <span style='color: {color_right_flexion}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_flexion} / {st.session_state.set_threshold_right_flexion}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text10.write("")
+
+                    # Towel Stretch
+                    if st.session_state.repetition_threshold_left_towel > 0 or st.session_state.set_threshold_left_towel > 0:
+                        text11.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_left_towel};'>> Left Towel Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_left_towel}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_left_towel} / {st.session_state.repetition_threshold_left_towel}</span>
+                                <span style='color: {color_left_towel}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_left_towel} / {st.session_state.set_threshold_left_towel}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text11.write("")
+
+                    if st.session_state.repetition_threshold_right_towel > 0 or st.session_state.set_threshold_right_towel > 0:
+                        text12.write(
+                            f"""
+                        <div style='display: flex; justify-content: space-between; align-items: center;'>
+                            <span style='font-size: 18px; font-weight: bold; color: {color_right_towel};'>> Right Towel Stretch</span>
+                            <div style='display: flex; gap: 20px;'>
+                                <span style='color: {color_right_towel}; font-size: 16px; font-weight: bold;'>Reps: {detector.repetition_right_towel} / {st.session_state.repetition_threshold_right_towel}</span>
+                                <span style='color: {color_right_towel}; font-size: 16px; font-weight: bold;'>Sets: {detector.set_right_towel} / {st.session_state.set_threshold_right_towel}</span>
+                            </div>
+                        </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        text12.write("")
 
             # Display the processed frame in c1
             imgRGB = cv2.resize(img, (0, 0), fx=0.6, fy=0.6)
@@ -543,29 +1022,29 @@ if app_mode == "Video":
             with c1:
                 # Dynamically fetch the threshold value for the current exercise
                 if detector.label == "ARMPIT LEFT":
-                    threshold = detector.angle_threshold_left_armpit
+                    threshold = detector.angle_left_armpit
                 elif detector.label == "ARMPIT RIGHT":
-                    threshold = detector.angle_threshold_right_armpit
+                    threshold = detector.angle_right_armpit
                 elif detector.label == "CIRCLE LEFT":
-                    threshold = detector.angle_threshold_left_circle
+                    threshold = detector.angle_left_circle
                 elif detector.label == "CIRCLE RIGHT":
-                    threshold = detector.angle_threshold_right_circle
+                    threshold = detector.angle_right_circle
                 elif detector.label == "CB LEFT":
-                    threshold = detector.angle_threshold_left_cross
+                    threshold = detector.angle_left_towel
                 elif detector.label == "CB RIGHT":
-                    threshold = detector.angle_threshold_right_cross
+                    threshold = detector.angle_right_towel
                 elif detector.label == "PENDULUM LEFT":
-                    threshold = detector.angle_threshold_left_pendulum
+                    threshold = detector.angle_left_towel
                 elif detector.label == "PENDULUM RIGHT":
-                    threshold = detector.angle_threshold_right_pendulum
+                    threshold = detector.angle_right_towel
                 elif detector.label == "FLEXION LEFT":
-                    threshold = detector.angle_threshold_left_flexion
+                    threshold = detector.angle_left_flexion
                 elif detector.label == "FLEXION RIGHT":
-                    threshold = detector.angle_threshold_right_flexion
+                    threshold = detector.angle_right_flexion
                 elif detector.label == "TOWEL LEFT":
-                    threshold = detector.angle_threshold_left_towel
+                    threshold = detector.angle_left_towel
                 elif detector.label == "TOWEL RIGHT":
-                    threshold = detector.angle_threshold_right_towel
+                    threshold = detector.angle_right_towel
                 else:
                     threshold = 90  # Default threshold for undefined exercises
 
@@ -694,99 +1173,99 @@ elif app_mode == "Angle":
     st.header("Set Exercise Angles")
     T1, T2, T3 = st.columns(3, border=True)
     with T1:
-        # ------------------------------------------- Armpit Stretch Angles ------------------------------------------ #
+        # Armpit Stretch Angles
         st.subheader("Armpit Stretch")
-        st.session_state.angle_threshold_left_armpit = st.number_input(
+        st.session_state.angle_left_armpit = st.number_input(
             "Angle Repetitions for Left Armpit Stretch",
             step=1,
-            value=st.session_state.angle_threshold_left_armpit,
+            value=st.session_state.angle_left_armpit,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_armpit = st.number_input(
+        st.session_state.angle_right_armpit = st.number_input(
             "Angle Repetitions for Right Armpit Stretch",
             step=1,
-            value=st.session_state.angle_threshold_right_armpit,
+            value=st.session_state.angle_right_armpit,
             placeholder="Enter Amount..."
         )
         pass
     with T2:
-        # ---------------------------------------------- Arm Circles Angles ------------------------------------------ #
+        # Arm Circles Angles
         st.subheader("Arm Circles")
-        st.session_state.angle_threshold_left_circle = st.number_input(
+        st.session_state.angle_left_circle = st.number_input(
             "Angle Repetitions for Left Arm Circles",
             step=1,
-            value=st.session_state.angle_threshold_left_circle,
+            value=st.session_state.angle_left_circle,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_circle = st.number_input(
+        st.session_state.angle_right_circle = st.number_input(
             "Angle Repetitions for Right Arm Circles",
             step=1,
-            value=st.session_state.angle_threshold_right_circle,
+            value=st.session_state.angle_right_circle,
             placeholder="Enter Amount..."
         )
         pass
     with T3:
-        # --------------------------------------- Cross Body Stretch Angles ------------------------------------------ #
+        # Cross Body Stretch Angles
         st.subheader("Cross Body Stretch")
-        st.session_state.angle_threshold_left_cross = st.number_input(
+        st.session_state.angle_left_cross = st.number_input(
             "Angle Repetitions for Left Cross Body Stretch",
             step=1,
-            value=st.session_state.angle_threshold_left_cross,
+            value=st.session_state.angle_left_cross,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_cross = st.number_input(
+        st.session_state.angle_right_cross = st.number_input(
             "Angle Repetitions for Right Cross Body Stretch",
             step=1,
-            value=st.session_state.angle_threshold_right_cross,
+            value=st.session_state.angle_right_cross,
             placeholder="Enter Amount..."
         )
         pass
     T4, T5, T6 = st.columns(3, border=True)
     with T4:
-        # ------------------------------------------- Pendulum Swing Angles ------------------------------------------ #
+        # Pendulum Swing Angles
         st.subheader("Pendulum Swing")
-        st.session_state.angle_threshold_left_pendulum = st.number_input(
+        st.session_state.angle_left_pendulum = st.number_input(
             "Angle Repetitions for Left Pendulum Swing",
             step=1,
-            value=st.session_state.angle_threshold_left_pendulum,
+            value=st.session_state.angle_left_pendulum,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_pendulum = st.number_input(
+        st.session_state.angle_right_pendulum = st.number_input(
             "Angle Repetitions for Right Pendulum Swing",
             step=1,
-            value=st.session_state.angle_threshold_right_pendulum,
+            value=st.session_state.angle_right_pendulum,
             placeholder="Enter Amount..."
         )
         pass
     with T5:
-        # ----------------------------------------- Shoulder Flexion Angles ------------------------------------------ #
+        # Shoulder Flexion Angles
         st.subheader("Shoulder Flexion")
-        st.session_state.angle_threshold_left_flexion = st.number_input(
+        st.session_state.angle_left_flexion = st.number_input(
             "Angle Repetitions for Left Shoulder Flexion",
             step=1,
-            value=st.session_state.angle_threshold_left_flexion,
+            value=st.session_state.angle_left_flexion,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_flexion = st.number_input(
+        st.session_state.angle_right_flexion = st.number_input(
             "Angle Repetitions for Right Shoulder Flexion",
             step=1,
-            value=st.session_state.angle_threshold_right_flexion,
+            value=st.session_state.angle_right_flexion,
             placeholder="Enter Amount..."
         )
         pass
     with T6:
-        # ------------------------------------------- Towel Stretch Angles  ------------------------------------------ #
+        # Towel Stretch Angles
         st.subheader("Towel Stretch")
-        st.session_state.angle_threshold_left_towel = st.number_input(
+        st.session_state.angle_left_towel = st.number_input(
             "Angle Repetitions for Left Towel Stretch",
             step=1,
-            value=st.session_state.angle_threshold_left_towel,
+            value=st.session_state.angle_left_towel,
             placeholder="Enter Amount..."
         )
-        st.session_state.angle_threshold_right_towel = st.number_input(
+        st.session_state.angle_right_towel = st.number_input(
             "Angle Repetitions for Right Towel Stretch",
             step=1,
-            value=st.session_state.angle_threshold_right_towel,
+            value=st.session_state.angle_right_towel,
             placeholder="Enter Amount..."
         )
         pass
