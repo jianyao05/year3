@@ -34,7 +34,7 @@ save_folder = f"./movement_datasets/{label}/"  # Folder to save repetitions
 #save_folder = f"./test_datasets/{label}/"  # Folder to save repetitions
 lm_list = []  # To store landmarks for one repetition
 frame_count = 0  # Track the frame count per repetition
-break_time = 0.5  # Break time between repetitions in seconds
+break_time = 0.05  # Break time between repetitions in seconds
 
 # Create folder if it doesn't exist
 if not os.path.exists(save_folder):

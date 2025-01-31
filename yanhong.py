@@ -381,7 +381,9 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
     resized = cv2.resize(image, dim, interpolation=inter)
     return resized
 
+MODEL = "NEW_CODE_V5.h5"
 
+logo = "C:\\Users\\223162D\\PycharmProjects\\year3\\nyp_logo.png"
 degree_of_movement = 0
 ### --------------------------------- STATE SESSIONS FOR REPETITION THRESHOLDS ------------------------------------- ###
 # Armpit Stretch
@@ -495,6 +497,7 @@ if "angle_right_towel" not in st.session_state:
     st.session_state.angle_right_towel = 90
 
 ### ------------------------------------ START OF USER INTERFACE CUSTOMISATIONS ------------------------------------ ###
+st.logo(logo, icon_image=logo, size="large")
 st.set_page_config(layout="wide")
 st.title("Frozen Shoulder Rehabilitation Model")
 st.markdown(
@@ -528,7 +531,7 @@ if app_mode == "Video":
 
 
         vid = cv2.VideoCapture(0)
-        detector = FrozenShoulder("NEW_CODE_V4.h5")
+        detector = FrozenShoulder(MODEL)
 
         # REPETITION THRESHOLD
         detector.repetition_threshold_left_flexion = st.session_state.repetition_threshold_left_flexion
@@ -1074,15 +1077,28 @@ elif app_mode == "Target":
         # Armpit Stretch Targets
         st.subheader("Armpit Stretch")
         st.session_state.repetition_threshold_left_armpit = st.number_input(
-            "Target Repetitions for Left Armpit Stretch",
+            "Repetitions Per Set for Left Armpit Stretch",
             step=1,
             value=st.session_state.repetition_threshold_left_armpit,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_armpit = st.number_input(
+            "Target Sets for Left Armpit Stretch",
+            step=1,
+            value=st.session_state.set_threshold_left_armpit,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_armpit = st.number_input(
-            "Target Repetitions for Right Armpit Stretch",
+            "Repetitions Per Set for Right Armpit Stretch",
             step=1,
             value=st.session_state.repetition_threshold_right_armpit,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_armpit = st.number_input(
+            "Target Sets for Right Armpit Stretch",
+            step=1,
+            value=st.session_state.set_threshold_right_armpit,
             placeholder="Enter Amount..."
         )
         pass
@@ -1090,15 +1106,28 @@ elif app_mode == "Target":
         # Arm Circles Targets
         st.subheader("Arm Circles")
         st.session_state.repetition_threshold_left_circle = st.number_input(
-            "Target Repetitions for Left Arm Circles",
+            "Repetitions Per Set for Left Arm Circles",
             step=1,
             value=st.session_state.repetition_threshold_left_circle,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_circle = st.number_input(
+            "Target Sets for Left Arm Circles",
+            step=1,
+            value=st.session_state.set_threshold_left_circle,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_circle = st.number_input(
-            "Target Repetitions for Right Arm Circles",
+            "Repetitions Per Set for Right Arm Circles",
             step=1,
             value=st.session_state.repetition_threshold_right_circle,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_circle = st.number_input(
+            "Target Sets for Right Arm Circles",
+            step=1,
+            value=st.session_state.set_threshold_right_circle,
             placeholder="Enter Amount..."
         )
         pass
@@ -1106,15 +1135,28 @@ elif app_mode == "Target":
         # Cross Body Stretch Targets
         st.subheader("Cross Body Stretch")
         st.session_state.repetition_threshold_left_cross = st.number_input(
-            "Target Repetitions for Left Cross Body Stretch",
+            "Repetitions Per Set for Left Cross Body Stretch",
             step=1,
             value=st.session_state.repetition_threshold_left_cross,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_cross = st.number_input(
+            "Target Sets for Left Cross Body Stretch",
+            step=1,
+            value=st.session_state.set_threshold_left_cross,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_cross = st.number_input(
-            "Target Repetitions for Right Cross Body Stretch",
+            "Repetitions Per Set for Right Cross Body Stretch",
             step=1,
             value=st.session_state.repetition_threshold_right_cross,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_cross = st.number_input(
+            "Target Sets for Right Cross Body Stretch",
+            step=1,
+            value=st.session_state.set_threshold_right_cross,
             placeholder="Enter Amount..."
         )
         pass
@@ -1123,15 +1165,28 @@ elif app_mode == "Target":
         # Pendulum Swing Targets
         st.subheader("Pendulum Swing")
         st.session_state.repetition_threshold_left_pendulum = st.number_input(
-            "Target Repetitions for Left Pendulum Swing",
+            "Repetitions Per Set for Left Pendulum Swing",
             step=1,
             value=st.session_state.repetition_threshold_left_pendulum,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_pendulum = st.number_input(
+            "Target Sets for Left Pendulum Swing",
+            step=1,
+            value=st.session_state.set_threshold_left_pendulum,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_pendulum = st.number_input(
-            "Target Repetitions for Right Pendulum Swing",
+            "Repetitions Per Set for Right Pendulum Swing",
             step=1,
             value=st.session_state.repetition_threshold_right_pendulum,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_pendulum = st.number_input(
+            "Target Sets for Right Pendulum Swing",
+            step=1,
+            value=st.session_state.set_threshold_right_pendulum,
             placeholder="Enter Amount..."
         )
         pass
@@ -1139,15 +1194,28 @@ elif app_mode == "Target":
         # Shoulder Flexion Targets
         st.subheader("Shoulder Flexion")
         st.session_state.repetition_threshold_left_flexion = st.number_input(
-            "Target Repetitions for Left Shoulder Flexion",
+            "Repetitions Per Set for Left Shoulder Flexion",
             step=1,
             value=st.session_state.repetition_threshold_left_flexion,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_flexion = st.number_input(
+            "Target Sets for Left Shoulder Flexion",
+            step=1,
+            value=st.session_state.set_threshold_left_flexion,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_flexion = st.number_input(
-            "Target Repetitions for Right Shoulder Flexion",
+            "Repetitions Per Set for Right Shoulder Flexion",
             step=1,
             value=st.session_state.repetition_threshold_right_flexion,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_flexion = st.number_input(
+            "Target Sets for Right Shoulder Flexion",
+            step=1,
+            value=st.session_state.set_threshold_right_flexion,
             placeholder="Enter Amount..."
         )
         pass
@@ -1155,15 +1223,28 @@ elif app_mode == "Target":
         # Towel Stretch Targets
         st.subheader("Towel Stretch")
         st.session_state.repetition_threshold_left_towel = st.number_input(
-            "Target Repetitions for Left Towel Stretch",
+            "Repetitions Per Set for Left Towel Stretch",
             step=1,
             value=st.session_state.repetition_threshold_left_towel,
             placeholder="Enter Amount..."
         )
+        st.session_state.set_threshold_left_towel = st.number_input(
+            "Target Sets for Left Towel Stretch",
+            step=1,
+            value=st.session_state.set_threshold_left_towel,
+            placeholder="Enter Amount..."
+        )
+        st.divider()
         st.session_state.repetition_threshold_right_towel = st.number_input(
-            "Target Repetitions for Right Towel Stretch",
+            "Repetitions Per Set for Right Towel Stretch",
             step=1,
             value=st.session_state.repetition_threshold_right_towel,
+            placeholder="Enter Amount..."
+        )
+        st.session_state.set_threshold_right_towel = st.number_input(
+            "Target Sets for Right Towel Stretch",
+            step=1,
+            value=st.session_state.set_threshold_right_towel,
             placeholder="Enter Amount..."
         )
         pass
