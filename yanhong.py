@@ -257,7 +257,7 @@ class FrozenShoulder:
             vector1 = np.array(reference) - np.array(RS)
             vector2 = np.array(RE) - np.array(RS)
         elif self.label == "CIRCLE LEFT":
-            cv2.line(img, (LS[0], 400), LS[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.line(img, LW[:2], LW[:2], (102, 204, 255), 4, cv2.LINE_AA)
             cv2.line(img, LS[:2], LE[:2], (102, 204, 255), 4, cv2.LINE_AA)
             cv2.circle(img, LS[:2], 5, (255, 0, 0), cv2.FILLED)
             cv2.circle(img, LE[:2], 5, (255, 0, 0), cv2.FILLED)
@@ -265,7 +265,7 @@ class FrozenShoulder:
             vector1 = np.array(reference) - np.array(LS)
             vector2 = np.array(LE) - np.array(LS)
         elif self.label == "CIRCLE RIGHT":
-            cv2.line(img, (RS[0], 400), RS[:2], (102, 204, 255), 4, cv2.LINE_AA)
+            cv2.line(img, RW[:2], RE[:2], (102, 204, 255), 4, cv2.LINE_AA)
             cv2.line(img, RS[:2], RE[:2], (102, 204, 255), 4, cv2.LINE_AA)
             cv2.circle(img, RS[:2], 5, (0, 0, 255), cv2.FILLED)
             cv2.circle(img, RE[:2], 5, (0, 0, 255), cv2.FILLED)
@@ -533,17 +533,47 @@ if app_mode == "Video":
         vid = cv2.VideoCapture(0)
         detector = FrozenShoulder(MODEL)
 
-        # REPETITION THRESHOLD
+        # Assign Repetition Thresholds from Session State to Detector (Alphabetical Order)
+        detector.repetition_threshold_left_armpit = st.session_state.repetition_threshold_left_armpit
+        detector.repetition_threshold_right_armpit = st.session_state.repetition_threshold_right_armpit
+        detector.repetition_threshold_left_circle = st.session_state.repetition_threshold_left_circle
+        detector.repetition_threshold_right_circle = st.session_state.repetition_threshold_right_circle
+        detector.repetition_threshold_left_cross = st.session_state.repetition_threshold_left_cross
+        detector.repetition_threshold_right_cross = st.session_state.repetition_threshold_right_cross
         detector.repetition_threshold_left_flexion = st.session_state.repetition_threshold_left_flexion
         detector.repetition_threshold_right_flexion = st.session_state.repetition_threshold_right_flexion
-        # SET THRESHOLD
+        detector.repetition_threshold_left_pendulum = st.session_state.repetition_threshold_left_pendulum
+        detector.repetition_threshold_right_pendulum = st.session_state.repetition_threshold_right_pendulum
+        detector.repetition_threshold_left_towel = st.session_state.repetition_threshold_left_towel
+        detector.repetition_threshold_right_towel = st.session_state.repetition_threshold_right_towel
+
+        # Assign Set Thresholds from Session State to Detector (Alphabetical Order)
+        detector.set_threshold_left_armpit = st.session_state.set_threshold_left_armpit
+        detector.set_threshold_right_armpit = st.session_state.set_threshold_right_armpit
+        detector.set_threshold_left_circle = st.session_state.set_threshold_left_circle
+        detector.set_threshold_right_circle = st.session_state.set_threshold_right_circle
+        detector.set_threshold_left_cross = st.session_state.set_threshold_left_cross
+        detector.set_threshold_right_cross = st.session_state.set_threshold_right_cross
         detector.set_threshold_left_flexion = st.session_state.set_threshold_left_flexion
         detector.set_threshold_right_flexion = st.session_state.set_threshold_right_flexion
-        # Angles THRESHOLD
+        detector.set_threshold_left_pendulum = st.session_state.set_threshold_left_pendulum
+        detector.set_threshold_right_pendulum = st.session_state.set_threshold_right_pendulum
+        detector.set_threshold_left_towel = st.session_state.set_threshold_left_towel
+        detector.set_threshold_right_towel = st.session_state.set_threshold_right_towel
+
+        # Assign Angles Thresholds from Session State to Detector (Alphabetical Order)
+        detector.angle_left_armpit = st.session_state.angle_left_armpit
+        detector.angle_right_armpit = st.session_state.angle_right_armpit
+        detector.angle_left_circle = st.session_state.angle_left_circle
+        detector.angle_right_circle = st.session_state.angle_right_circle
+        detector.angle_left_cross = st.session_state.angle_left_cross
+        detector.angle_right_cross = st.session_state.angle_right_cross
         detector.angle_left_flexion = st.session_state.angle_left_flexion
         detector.angle_right_flexion = st.session_state.angle_right_flexion
-
-
+        detector.angle_left_pendulum = st.session_state.angle_left_pendulum
+        detector.angle_right_pendulum = st.session_state.angle_right_pendulum
+        detector.angle_left_towel = st.session_state.angle_left_towel
+        detector.angle_right_towel = st.session_state.angle_right_towel
 
         i = 0  # iterations
         warmup_frames = 60
