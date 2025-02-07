@@ -8,11 +8,11 @@ from sklearn.model_selection import train_test_split
 
 # Constants
 DATA_DIR = "C:\\Users\\223162D\\PycharmProjects\\year3\\movement_datasets"
-MODEL_SAVE_PATH = "NEW_CODE_V5.h5"
+MODEL_SAVE_PATH = "cunt5.h5"
 N_TIME_STEPS = 60  # Number of timesteps per sequence
 STEP_SIZE = 10  # Step size for moving window
 N_FEATURES = 36  # Number of features (x, y, z, visibility)
-EPOCHS = 100  # Number of epochs for training
+EPOCHS = 25  # Number of epochs for training
 BATCH_SIZE = 128  # Batch size for training
 VALIDATION_SPLIT = 0.2  # Validation split for training
 

@@ -17,8 +17,8 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Parameters
-label = "ARMPIT_LEFT"  # Label for the dataset (change for specific movement)
-#label = "ARMPIT_RIGHT"  # Label for the dataset (change for specific movement)
+#label = "ARMPIT_LEFT"  # Label for the dataset (change for specific movement)
+label = "ARMPIT_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "CIRCLE_LEFT"  # Label for the dataset (change for specific movement)
 #label = "CIRCLE_RIGHT"  # Label for the dataset (change for specific movement)
 #label = "CROSS_BODY_LEFT"  # Label for the dataset (change for specific movement)
