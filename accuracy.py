@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import OneHotEncoder
 
 # Load the model
-model_path = "cunt5.h5"  # Replace with your model path
+model_path = "fyp_demo.h5"  # Replace with your model path
 model = load_model(model_path)
 
 # Load and preprocess the test data
