@@ -383,7 +383,7 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 MODEL = "NEW_CODE_V5.h5"
 
-logo = "C:\\Users\\223162D\\PycharmProjects\\year3\\nyp_logo.png"
+logo = "nyp_logo.png"
 degree_of_movement = 0
 ### --------------------------------- STATE SESSIONS FOR REPETITION THRESHOLDS ------------------------------------- ###
 # Armpit Stretch
